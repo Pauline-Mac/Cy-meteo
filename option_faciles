@@ -5,11 +5,11 @@ echo $#
 echo $@
 for var in $@; do
 	case $var in
-		"-t1")  cut -d";" -f1,2,11,12,13 meteo_filtered_data_v1.csv | sort -n > temp.txt ;;
-		"-t2")  cut -d";" -f1,10 meteo_filtered_data_v1.csv | sort -rn > temp_moy.txt ;; ## a faire
+		"-t1")  cut -d";" -f1,2,11,12,13 meteo_filtered_data_v1.csv > temp.txt ;;
+		"-t2")  cut -d";" -f1,10 meteo_filtered_data_v1.csv > temp_moy.txt ;; ## a faire
 		"-t3") ## à faire
-		"-p1")  cut -d";" -f1,2,7 meteo_filtered_data_v1.csv | sort -n > pression.txt ;;
-		"-h")  cut -d";" -f1,14 meteo_filtered_data_v1.csv | sort -t";" -k2 -rn > altitude.txt ;;
-		"-m")  cut -d";" -f1,6 meteo_filtered_data_v1.csv | sort -t";" -k2 -rn > humidite.txt ;;
+		"-p1")  cut -d";" -f1,2,7 meteo_filtered_data_v1.csv > pression.txt ;;
+		"-h")  cut -d";" -f1,14 meteo_filtered_data_v1.csv > altitude.txt ;;
+		"-m")  cut -d";" -f1,6 meteo_filtered_data_v1.csv > humidite.txt ;;
 	esac 
 done
