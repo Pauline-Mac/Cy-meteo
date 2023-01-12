@@ -1,15 +1,87 @@
-#!bin/bash
+#!/bin/bash
 
+##   ${!i}  permt de réutiliser la valeur de i comme nom de variable
+
+t1=0
+t2=0
+p1=0
+h=0
+m=0
+
+fct_t1()
+{
+	if [ $t1 -gt 0 ]
+	then 
+		echo $t1
+		echo "problem detected too many arguments of the same type"
+	else
+		cut -d";" -f1,11 meteo_filtered_data_v1.csv > temp.txt
+		t1=$((t1+1))
+	fi
+}
+
+fct_t2()
+{
+	if [ $t2 -gt 0 ]
+	then 
+		echo $t2
+		echo "problem detected too many arguments of the same type"
+	else
+		cut -d";" -f1,2,10 meteo_filtered_data_v1.csv > temp_moy.txt
+		t2=$((t2+1))
+	fi
+}
+
+fct_p1()
+{
+	if [ $p1 -gt 0 ]
+	then 
+		echo $p1
+		echo "problem detected too many arguments of the same type"
+	else
+		cut -d";" -f1,7 meteo_filtered_data_v1.csv > pression.txt
+		p1=$((p1+1))
+	fi
+}
+
+fct_h()
+{
+	if [ $h -gt 0 ]
+	then 
+		echo $h
+		echo "problem detected too many arguments of the same type"
+	else
+		cut -d";" -f1,14 meteo_filtered_data_v1.csv > altitude.txt
+		h=$((h+1))
+	fi
+}
+
+fct_m()
+{
+	if [ $m -gt 0 ]
+	then 
+		echo $m
+		echo "problem detected too many arguments of the same type"
+	else
+		cut -d";" -f1,6 meteo_filtered_data_v1.csv > humidite.txt
+		m=$((m+1))
+	fi
+}
 
 echo $#
 echo $@
 for var in $@; do
 	case $var in
-		"-t1")  cut -d";" -f1,2,11,12,13 meteo_filtered_data_v1.csv > temp.txt ;;
-		"-t2")  cut -d";" -f1,10 meteo_filtered_data_v1.csv > temp_moy.txt ;; ## a faire
-		"-t3") ## à faire
-		"-p1")  cut -d";" -f1,2,7 meteo_filtered_data_v1.csv > pression.txt ;;
-		"-h")  cut -d";" -f1,14 meteo_filtered_data_v1.csv > altitude.txt ;;
-		"-m")  cut -d";" -f1,6 meteo_filtered_data_v1.csv > humidite.txt ;;
+		"-t1") fct_t1 ;;
+		"-t2") fct_t2 ;;
+		"-p1") fct_p1 ;;
+		"-h")  fct_h ;;
+		"-m")  fct_m ;;
 	esac 
 done
+
+
+
+grep -v -E "^$"
+
+grep -E "^$" | wc -l
