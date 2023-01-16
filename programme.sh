@@ -10,6 +10,8 @@ m=0
 
 recurrence=0
 
+sort=abr
+
 ## localisation
 
 fct_G()
@@ -96,14 +98,6 @@ for var in $@; do
 	esac 
 done
 
-## dates
-
-while (($#)) ;
-do
-   case $var in
-		"-d") min=$1 max=$2 ## à revérifier
-		shift ;;
-done
 
 ## mods
 fct_t1()
@@ -190,6 +184,15 @@ fct_w()
 	fi
 }
 
+## type of sort we will be using
+for var in $@; do
+	case $var in
+		"--abr") sort=abr ;;
+		"--avl") sort=avl ;;
+		"--tab") sort=tab ;;
+	esac
+done
+
 echo $#
 echo $@
 for var in $@; do
@@ -201,5 +204,8 @@ for var in $@; do
 		"-h") fct_h ;;
 		"-m") fct_m ;;
 		"-w") fct_w ;;
+
 	esac 
 done
+
+gcc test.c -o test && ./test $sort
