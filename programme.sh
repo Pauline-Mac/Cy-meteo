@@ -12,7 +12,16 @@ recurrence=0
 
 sort=abr
 
+reverse=
+
 ## localisation
+
+fct_return()
+{
+	echo "error occured when executing -" $1
+	exit 1	
+}
+
 
 fct_G()
 {
@@ -20,7 +29,10 @@ fct_G()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>1.5 && $10<6.5 && $11<-50 && $11>-55){print $0}}' > localisation.txt 
+		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>'"1.5"' && $10<'"6.5"' && $11<'"-50"' && $11>'"-55"'){print $0}}' > localisation.txt 
+		if [ $? -ne 0 ] ; then
+			fct_return 'G'
+		fi
 		recurrence=$((recurrence+1))
 	fi
 }
@@ -32,6 +44,9 @@ fct_F()
 		echo "you cannot select more than one location, please try again"
 	else
 		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>40 && $10<52 && $11>4 && $11<6){print $0}}' > localisation.txt 
+		if [ $? -ne 0 ] ; then
+			fct_return 'F'
+		fi
 		recurrence=$((recurrence+1))
 	fi
 }
@@ -43,6 +58,9 @@ fct_A()
 		echo "you cannot select more than one location, please try again"
 	else
 		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>11 && $10<18 && $11>-63 && $11<-59){print $0}}' > localisation.txt 
+		if [ $? -ne 0 ] ; then
+			fct_return 'A'
+		fi
 		recurrence=$((recurrence+1))
 	fi
 }
@@ -54,6 +72,9 @@ fct_S()
 		echo "you cannot select more than one location, please try again"
 	else
 		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>46 && $10<52 && $11>-60 && $11<-51){print $0}}' > localisation.txt 
+		if [ $? -ne 0 ] ; then
+			fct_return 'S'
+		fi
 		recurrence=$((recurrence+1))
 	fi
 }
@@ -65,6 +86,9 @@ fct_O()
 		echo "you cannot select more than one location, please try again"
 	else
 		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>-60 && $10<-9 && $11>36 && $11<90){print $0}}' > localisation.txt 
+		if [ $? -ne 0 ] ; then
+			fct_return 'O'
+		fi
 		recurrence=$((recurrence+1))
 	fi
 }
@@ -76,6 +100,9 @@ fct_Q()
 		echo "you cannot select more than one location, please try again"
 	else
 		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10<-60 && $11<50){print $0}}' > localisation.txt 
+		if [ $? -ne 0 ] ; then
+			fct_return 'Q'
+		fi
 		recurrence=$((recurrence+1))
 	fi
 }
@@ -99,6 +126,7 @@ for var in $@; do
 done
 
 
+
 ## mods
 fct_t1()
 {
@@ -109,6 +137,8 @@ fct_t1()
 	else
 		cut -d";" -f1,13,14 localisation.txt > t1.txt
 		t1=$((t1+1))
+		echo $reverse
+		
 	fi
 }
 
@@ -184,14 +214,22 @@ fct_w()
 	fi
 }
 
-## type of sort we will be using
+
+
+
+## type of sort we will be using and if the sorting will be done in reverse
 for var in $@; do
 	case $var in
 		"--abr") sort=abr ;;
 		"--avl") sort=avl ;;
 		"--tab") sort=tab ;;
+		"-r") reverse=yes ;;
 	esac
 done
+
+
+
+
 
 echo $#
 echo $@
@@ -208,4 +246,6 @@ for var in $@; do
 	esac 
 done
 
-gcc test.c -o test && ./test $sort
+echo $sort
+
+## ./test $sort
