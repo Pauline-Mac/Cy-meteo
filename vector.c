@@ -19,8 +19,17 @@ typedef struct arbre
     struct arbre *fd;
     int eq;
 } Arbre;
+typedef struct chainon{
+	int id;
+    float vitesse;
+    float NScoor;
+    float OEcoor;
+    float angle;
+	struct chainon* pNext;
+}Chainon;
 
 typedef Arbre *pArbre;
+
 
 pArbre creerArbre(int id, float angle, float vitesse, float NScoor, float OEcoor)
 {
@@ -40,8 +49,6 @@ pArbre creerArbre(int id, float angle, float vitesse, float NScoor, float OEcoor
 	return pnew;
 }
 
-typedef Arbre *pArbre;
-
 void traiter(pArbre a, FILE* outputfile)
 {
 
@@ -50,8 +57,133 @@ void traiter(pArbre a, FILE* outputfile)
 
 
 	fprintf(outputfile, "%f %f %f %f\n", a->OEcoor, a->NScoor, a->OEcoor + a->vitesse*cos(a->angle) ,a->NScoor + a->vitesse*sin(a->angle) );
-    puts("");
 }
+
+void traiterList(Chainon* list, FILE* outputfile){
+	// add data to output file with modification
+	// x1 :a->OEcoor  y1:a->NScoor  x2 : a->OEcoor + a->vitesse*cos(a->angle) y2 : a->NScoor + a->vitesse*sin(a->angle)
+	while(list!=NULL){
+		fprintf(outputfile, "%f %f %f %f\n", list->OEcoor, list->NScoor, list->OEcoor + list->vitesse*cos(list->angle) ,list->NScoor + list->vitesse*sin(list->angle) );
+		list = list->pNext;
+	}
+}
+
+typedef Arbre *pArbre;
+
+//FCT LIST
+
+Chainon* creationChainon(int id, float angle, float vitesse, float NScoor, float OEcoor){
+	Chainon* pnew = malloc(sizeof(Chainon));
+	
+	if(pnew == NULL){
+		exit(1);
+	}
+	pnew->id = id;
+    pnew->angle = angle;
+    pnew->vitesse = vitesse;
+    pnew->NScoor = NScoor;
+    pnew->OEcoor = OEcoor;
+	pnew->pNext = NULL;
+	return pnew;
+}
+
+void AddList(Chainon* pPlace, Chainon* pAddChainon) {
+	if(pPlace == NULL){
+		exit(1);
+	}
+	if(pAddChainon == NULL){
+		exit(1);
+	}
+	pAddChainon->pNext = pPlace->pNext;
+	pPlace -> pNext = pAddChainon;
+	
+}
+
+Chainon* insertList(Chainon* pHead, char* list_champ[]){
+	int data = atoi(list_champ[0]);
+	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]), atof(list_champ[4]));
+	Chainon* p1 = malloc(sizeof(Chainon));
+	Chainon* p2 = malloc(sizeof(Chainon));
+	if (p1==NULL || p2 == NULL){
+		exit(1);
+	}
+	//empty list
+	if (pHead == NULL){
+		return pAddChainon;
+	}
+	//one node list
+	if (pHead->pNext == NULL){
+		if (pHead->id <= data){
+			pHead->pNext = pAddChainon;
+			return pHead;
+		}
+		else{
+			pAddChainon->pNext = pHead;
+			return pAddChainon;
+		}
+		
+	}
+	//add start
+	if (pHead->id > data){
+		pAddChainon->pNext = pHead;
+		return pAddChainon;
+	}
+
+
+	p1 = pHead;
+	p2 = pHead->pNext;
+	while (p2!=NULL){
+		//update node
+		if (p1->id == data){
+			printf("update list");
+			return pHead;
+		}
+		//insert node
+		if (data > p1->id && data<p2->id){	
+			AddList(p1,pAddChainon);
+			return pHead;
+		}
+		else {
+			p1 = p1->pNext;
+			p2 = p2->pNext;
+		}
+	}
+	//end of list ADD END
+	if(data == p1->id){
+		printf("updatelist");
+	}
+	else{
+		p1->pNext = pAddChainon;
+	}
+	return pHead;
+	
+	
+}
+
+// FCT ABR
+pArbre recursive_insertABR(pArbre a, char* list_champ[])
+{
+	int data = atoi(list_champ[0]);
+	if (a == NULL)
+	{
+		return creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]), atof(list_champ[4]));
+	}
+	else if (data == a->id){
+		printf("update ABR");
+	}
+	else if (data < a->id)
+	{
+		a->fg = recursive_insertABR(a->fg, list_champ);
+	}
+	else if (data > a->id)
+	{
+		a->fd = recursive_insertABR(a->fd, list_champ);
+	}
+	return a;
+}
+
+
+// FCT AVL
 
 void parcoursInfixe(pArbre a, FILE* outputfile)
 {
@@ -164,7 +296,6 @@ pArbre doubleRotationDroite(pArbre a)
 }
 
 
-//reéquilibrage auto mais pas capt 
 pArbre insert(pArbre root, char* list_champ[])
 
 {
@@ -262,8 +393,18 @@ pArbre insert(pArbre root, char* list_champ[])
 
 int main(int argc, char **argv)
 {
+	int AVL = 0;
+	int ABR = 0;
+	int LIST = 1;
 
-    pArbre rootDat = NULL;
+	if (LIST){
+		puts("LIst sort");
+	}
+
+
+	pArbre rootDat = NULL;
+	Chainon* ListDat = NULL;
+   
 
     FILE *inputFile;
 
@@ -274,14 +415,14 @@ int main(int argc, char **argv)
     if (argc == 0)
     {
         printf("Usage: sample filename...\n");
-        exit(0);
+        exit(1);
     }
 
     inputFile = fopen(argv[0], "r");
     if (inputFile == NULL)
     {
         printf("Cannot open file %s\n", argv[0]);
-        exit(0);
+        exit(1);
     }
 
     puts("file is ok");
@@ -296,7 +437,7 @@ int main(int argc, char **argv)
     if (outputFile == NULL)
     {
         puts("Cannot open file vectorOutput.txt");
-        exit(0);
+        exit(1);
     }
 
     // column name flush
@@ -314,31 +455,31 @@ int main(int argc, char **argv)
         value = strtok(line, ";");
         while (value)
         {
-            // printf("Réception d'une ligne de longueur %zu :\n", read);
-            //fprintf(outputFile, "%s ", value);
-            /*if (colomn == 0){
-
-                val = atoi(value);
-            }
-            if (colomn == 1){
-                val = atof(value);
-            }*/
-
+            
             champ[colomn] = value;
 
             printf("%s ", champ[colomn]);
             value = strtok(NULL, ";\n");
             colomn++;
         }
-    //insertion dans AVL
-        rootDat = insert(rootDat, champ);
-
-        printf("\n");
-        //fprintf(outputFile, "\n");
+		puts("");
+    	//insertion dans AVL
+		if(AVL){
+			rootDat = insert(rootDat, champ);
+		}
         
-        // reinitializa champ for next line
+    	// insertion ABR
+		else if (ABR){
+			rootDat = recursive_insertABR(rootDat, champ);
+		}
 
-        for (int i = 0; i < 5 ; i++){
+		//insertion list
+		else if (LIST){
+			ListDat = insertList(ListDat, champ);
+		}
+
+    	// reinit champ for next line
+       	 for (int i = 0; i < 5 ; i++){
             champ[i] = "0";
         }
     }
@@ -347,9 +488,22 @@ int main(int argc, char **argv)
         free(line);
     }
 
-    // affichage AVL check tri
-    puts("\n TRI \n");
-    parcoursInfixe(rootDat, outputFile);
+    // Add sorted data to outputfile
+	if (ABR || AVL){
+		parcoursInfixe(rootDat, outputFile);
+	}
+	else{
+		traiterList(ListDat, outputFile);
+		/*
+		puts("List last");
+		while(ListDat){
+			printf("%d \n",ListDat->id);
+			ListDat = ListDat->pNext;
+		}
+		*/
+		
+	}
+    
 
 
     fclose(inputFile);
