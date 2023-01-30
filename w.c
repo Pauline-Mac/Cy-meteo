@@ -135,7 +135,10 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	while (p2!=NULL){
 		//update node
 		if (p1->id == data){
-			printf("update list");
+			//update moy angle
+			p1->angle = (p1->angle + atof(list_champ[1])) / 2;
+			//update moy vitesse
+			p1->vitesse = (p1->vitesse + atof(list_champ[2])) / 2;
 			return pHead;
 		}
 		//insert node
@@ -150,7 +153,10 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	}
 	//end of list ADD END
 	if(data == p1->id){
-		printf("updatelist");
+		//update moy angle
+		p1->angle = (p1->angle + atof(list_champ[1])) / 2;
+		//update moy vitesse
+		p1->vitesse = (p1->vitesse + atof(list_champ[2])) / 2;
 	}
 	else{
 		p1->pNext = pAddChainon;
@@ -169,7 +175,10 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 		return creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]), atof(list_champ[4]));
 	}
 	else if (data == a->id){
-		printf("update ABR");
+		//update moy angle
+		a->angle = (a->angle + atof(list_champ[1])) / 2;
+		//update moy vitesse
+		a->vitesse = (a->vitesse + atof(list_champ[2])) / 2;
 	}
 	else if (data < a->id)
 	{
@@ -320,7 +329,10 @@ pArbre insert(pArbre root, char* list_champ[])
 	else if (data == root->id)
 
 	{
-		printf("update");
+		//update moy angle
+		root->angle = (root->angle + atof(list_champ[1])) / 2;
+		//update moy vitesse
+		root->vitesse = (root->vitesse + atof(list_champ[2])) / 2;
 	}
 
 	else if (data > root->id)
@@ -393,13 +405,9 @@ pArbre insert(pArbre root, char* list_champ[])
 
 int main(int argc, char **argv)
 {
-	int AVL = 0;
+	int AVL = 1;
 	int ABR = 0;
-	int LIST = 1;
-
-	if (LIST){
-		puts("LIst sort");
-	}
+	int LIST = 0;
 
 
 	pArbre rootDat = NULL;
@@ -426,7 +434,6 @@ int main(int argc, char **argv)
     }
 
     puts("file is ok");
-    puts("\n");
 
     FILE *outputFile;
     char *line = NULL;

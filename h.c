@@ -30,7 +30,7 @@ typedef struct chainon{
 typedef Arbre *pArbre;
 
 
-pArbre creerArbre(int id, float moist, float NScoor, float OEcoor )
+pArbre creerArbre(int id, float height, float NScoor, float OEcoor )
 {
 	pArbre pnew = malloc(sizeof(Arbre));
 	if (pnew == NULL)
@@ -38,7 +38,7 @@ pArbre creerArbre(int id, float moist, float NScoor, float OEcoor )
 		exit(1);
 	}
 	pnew->id = id;
-    pnew->angle = moist;
+    pnew->angle = height;
 	pnew->vitesse = 0;
 	pnew->NScoor =NScoor;
 	pnew->OEcoor = OEcoor;
@@ -60,7 +60,7 @@ void traiter(pArbre a, FILE* outputfile)
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
-	//  in new list ->id : moisture and ->angle : id
+	//  in new list ->id : height and ->angle : id
 	while(list!=NULL){
 		fprintf(outputfile, "%f %f %d\n", list->NScoor, list->OEcoor, list->id);
 		list = list->pNext;
@@ -71,15 +71,15 @@ typedef Arbre *pArbre;
 
 //FCT LIST
 
-Chainon* creationChainon(int id, float angle, float vitesse, float NScoor, float OEcoor){
+Chainon* creationChainon(int id, float height,float NScoor, float OEcoor){
 	Chainon* pnew = malloc(sizeof(Chainon));
 	
 	if(pnew == NULL){
 		exit(1);
 	}
 	pnew->id = id;
-    pnew->angle = angle;
-    pnew->vitesse = vitesse;
+    pnew->angle = height;
+    pnew->vitesse = 0;
     pnew->NScoor = NScoor;
     pnew->OEcoor = OEcoor;
 	pnew->pNext = NULL;
@@ -98,10 +98,9 @@ void AddList(Chainon* pPlace, Chainon* pAddChainon) {
 	
 }
 //decreasing list sort
-//update needs changes
 Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	int data = atoi(list_champ[0]);
-	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]), atof(list_champ[4]));
+	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]) );
 	Chainon* p1 = malloc(sizeof(Chainon));
 	Chainon* p2 = malloc(sizeof(Chainon));
 	if (p1==NULL || p2 == NULL){
@@ -135,8 +134,6 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	while (p2!=NULL){
 		//update node
 		if (p1->id == data){
-			printf("update list");
-			return pHead;
 		}
 		//insert node
 		if (data > p1->id && data<p2->id){	
@@ -149,10 +146,7 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 		}
 	}
 	//end of list ADD END
-	if(data == p1->id){
-		printf("updatelist");
-	}
-	else{
+	if(data != p1->id){
 		p1->pNext = pAddChainon;
 	}
 	return pHead;
@@ -161,16 +155,12 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 }
 
 // FCT ABR
-//update part needs changes
 pArbre recursive_insertABR(pArbre a, char* list_champ[])
 {
 	int data = atoi(list_champ[0]);
 	if (a == NULL)
 	{
 		return creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
-	}
-	else if (data == a->id){
-		//printf("update ABR");
 	}
 	else if (data < a->id)
 	{
@@ -325,7 +315,6 @@ pArbre doubleRotationDroite(pArbre a)
 
 
 
-//update section needs an update maybe a fonction for each insertion
 pArbre insert(pArbre root, char* list_champ[])
 
 {
@@ -345,12 +334,6 @@ pArbre insert(pArbre root, char* list_champ[])
 		}
 
 		root = new_node;
-	}
-	// update node
-	else if (data == root->id)
-
-	{
-		//printf("update");
 	}
 
 	else if (data > root->id)
@@ -385,7 +368,7 @@ pArbre insert(pArbre root, char* list_champ[])
 		}
 	}
 
-	else
+	else if (data < root->id)
 
 	{
 
@@ -442,11 +425,11 @@ void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 		char res4[50];
 		char* chps[4];
 		//int value to string
-		sprintf(res4, "%d", root->id);
+		sprintf(res2, "%d", root->id);
 		//float value to string
-		sprintf(res2,"%.5f", root->angle);
+		sprintf(res1,"%.5f", root->angle);
 		sprintf(res3, "%.5f", root->NScoor);
-		sprintf(res1, "%.5f", root->OEcoor);
+		sprintf(res4, "%.5f", root->OEcoor);
 		chps[0] = res1;
 		chps[1] = res2;
 		chps[2] = res3;
@@ -462,9 +445,9 @@ void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 
 int main(int argc, char **argv)
 {
-	int AVL = 1;
+	int AVL = 0;
 	int ABR = 0;
-	int LIST = 0;
+	int LIST = 1;
 
 	pArbre rootDat = NULL;
 	pArbre newrootDat = NULL;

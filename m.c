@@ -53,7 +53,7 @@ void traiter(pArbre a, FILE* outputfile)
 {
 
 	// add data to output file
-	// in new AVL ->id : moisture and ->angle : id
+	// in new tree ->id : moisture and ->angle : id
 
 
 	fprintf(outputfile, "%f %f %d\n", a->NScoor, a->OEcoor, a->id);
@@ -61,9 +61,9 @@ void traiter(pArbre a, FILE* outputfile)
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
-	// x1 :a->OEcoor  y1:a->NScoor  x2 : a->OEcoor + a->vitesse*cos(a->angle) y2 : a->NScoor + a->vitesse*sin(a->angle)
+	//  in new list ->id : moisture and ->angle : id
 	while(list!=NULL){
-		fprintf(outputfile, "%f %f %f %f\n", list->OEcoor, list->NScoor, list->OEcoor + list->vitesse*cos(list->angle) ,list->NScoor + list->vitesse*sin(list->angle) );
+		fprintf(outputfile, "%f %f %d\n", list->NScoor, list->OEcoor, list->id);
 		list = list->pNext;
 	}
 }
@@ -136,7 +136,10 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	while (p2!=NULL){
 		//update node
 		if (p1->id == data){
-			printf("update list");
+			//update max
+			if (atof(list_champ[1]) > p1->angle ){
+				p1->angle = atof(list_champ[1]);
+			}
 			return pHead;
 		}
 		//insert node
@@ -151,7 +154,10 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	}
 	//end of list ADD END
 	if(data == p1->id){
-		printf("updatelist");
+		//update max
+		if (atof(list_champ[1]) > p1->angle ){
+			p1->angle = atof(list_champ[1]);
+		}
 	}
 	else{
 		p1->pNext = pAddChainon;
@@ -171,7 +177,10 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 		return creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
 	}
 	else if (data == a->id){
-		printf("update ABR");
+		//update max
+		if (atof(list_champ[1]) > a->angle ){
+			a->angle = atof(list_champ[1]);
+		}
 	}
 	else if (data < a->id)
 	{
@@ -184,6 +193,30 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 	return a;
 }
 
+void parcoursINFIXEaddToNewABR(pArbre root, pArbre* newroot){
+	if (root!=NULL){
+		parcoursINFIXEaddToNewABR(root->fg, newroot);
+		char res1[50];
+		char res2[50];
+		char res3[50];
+		char res4[50];
+		char* chps[4];
+		//int value to string
+		sprintf(res2, "%d", root->id);
+		//float value to string
+		sprintf(res1,"%.5f", root->angle);
+		sprintf(res3, "%.5f", root->NScoor);
+		sprintf(res4, "%.5f", root->OEcoor);
+		chps[0] = res1;
+		chps[1] = res2;
+		chps[2] = res3;
+		chps[3] = res4;
+		//insert in new ABR
+		// in new abr champs in order: humidité, id, ns, oe
+		*newroot = recursive_insertABR(*newroot, chps);
+		parcoursINFIXEaddToNewABR(root->fd, newroot);
+	}
+}
 
 // FCT AVL
 
@@ -303,7 +336,7 @@ pArbre doubleRotationDroite(pArbre a)
 
 
 //update section needs an update maybe a fonction for each insertion
-pArbre insert(pArbre root, char* list_champ[])
+pArbre insert(pArbre root, char* list_champ[], int update_status)
 
 {
     int data = atoi(list_champ[0]);
@@ -327,7 +360,13 @@ pArbre insert(pArbre root, char* list_champ[])
 	else if (data == root->id)
 
 	{
-		//printf("update");
+		if (update_status == 1){
+			//update max
+			if (atof(list_champ[1]) > root->angle ){
+				root->angle = atof(list_champ[1]);
+			}
+		}
+		
 	}
 
 	else if (data > root->id)
@@ -336,7 +375,7 @@ pArbre insert(pArbre root, char* list_champ[])
 
 		// insert the new node to the right
 
-		root->fd = insert(root->fd, list_champ);
+		root->fd = insert(root->fd, list_champ,update_status);
 
 		// tree is unbalanced, then rotate it
 
@@ -368,7 +407,7 @@ pArbre insert(pArbre root, char* list_champ[])
 
 		// insert the new node to the left
 
-		root->fg = insert(root->fg, list_champ);
+		root->fg = insert(root->fg, list_champ,update_status);
 
 		// tree is unbalanced, then rotate it
 
@@ -428,7 +467,7 @@ void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 		chps[3] = res4;
 		//insert in new AVL
 		// in new avl champs in order: humidité, id, ns, oe
-		*newroot = insert(*newroot, chps);
+		*newroot = insert(*newroot, chps, 0);
 		parcoursINFIXEaddToNewAVL(root->fd, newroot);
 	}
 }
@@ -437,9 +476,9 @@ void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 
 int main(int argc, char **argv)
 {
-	int AVL = 1;
+	int AVL = 0;
 	int ABR = 0;
-	int LIST = 0;
+	int LIST = 1;
 
 	if (LIST){
 		puts("LIst sort");
@@ -511,7 +550,7 @@ int main(int argc, char **argv)
 		//puts("");
     	//insertion dans AVL
 		if(AVL){
-			rootDat = insert(rootDat, champ);
+			rootDat = insert(rootDat, champ,1);
 		}
         
     	// insertion ABR
@@ -533,15 +572,18 @@ int main(int argc, char **argv)
     {
         free(line);
     }
-	// create new AVL from old AVL
-	//new AVL is sorted by max moisture
-	parcoursINFIXEaddToNewAVL(rootDat, &newrootDat);
-	SHOWavl(rootDat);
-	SPACE;
-	SHOWavl(newrootDat);
 
     // Add sorted data to outputfile
-	if (ABR || AVL){
+	if (AVL){
+		// create new AVL from old AVL
+		//new AVL is sorted by max moisture
+		parcoursINFIXEaddToNewAVL(rootDat, &newrootDat);
+		parcoursInfixe(newrootDat, outputFile);
+	}
+	else if (ABR){
+		// create new ABR from old ABR
+		//new ABR is sorted by max moisture
+		parcoursINFIXEaddToNewABR(rootDat, &newrootDat);
 		parcoursInfixe(newrootDat, outputFile);
 	}
 	else{
