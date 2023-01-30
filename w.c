@@ -1,4 +1,4 @@
-// MULTIPLE VALUE AVL
+// we take: id, direction, vitesse, ns, oe
 
 // ADD ACCORDING TO FIRST VALUE
 
