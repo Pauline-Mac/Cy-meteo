@@ -22,7 +22,7 @@ format type dans fichier sh (remplacer les "  " ):
 
 echo > gnuplot.in 
 echo "set terminal png" >> gnuplot.in
-echo "set output 'sinus.png'" >> gnuplot.in
+echo "set output 'sin.png'" >> gnuplot.in
 echo "plot sin(x)" >> gnuplot.in
 gnuplot gnuplot.in
 xdg-open sin.png
