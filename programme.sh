@@ -8,6 +8,28 @@ p1=0
 h=0
 m=0
 
+i=$#
+arg_list=$@
+file=not_define
+
+while [ $# -gt 0 ] ; do
+	case "$1" in
+	-f) file=$2 ;;
+	esac 
+shift 
+done
+
+
+if [ ! -e $file ]
+then
+    echo "le fichier n'existe pas"
+    exit 1
+fi
+
+echo $i
+echo $arg_list
+
+
 recurrence=0
 
 sort=abr
@@ -29,7 +51,7 @@ fct_G()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>'"1.5"' && $10<'"6.5"' && $11<'"-50"' && $11>'"-55"'){print $0}}' > localisation.txt 
+		cat $file | tr  ',' ';' | awk -F ';' '{if($10>'"1.5"' && $10<'"6.5"' && $11<'"-50"' && $11>'"-55"'){print $0}}' > localisation.txt 
 		if [ $? -ne 0 ] ; then
 			fct_return 'G'
 		fi
@@ -43,7 +65,7 @@ fct_F()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>40 && $10<52 && $11>4 && $11<6){print $0}}' > localisation.txt 
+		cat $file | tr  ',' ';' | awk -F ';' '{if($10>40 && $10<52 && $11>4 && $11<6){print $0}}' > localisation.txt 
 		if [ $? -ne 0 ] ; then
 			fct_return 'F'
 		fi
@@ -57,7 +79,7 @@ fct_A()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>11 && $10<18 && $11>-63 && $11<-59){print $0}}' > localisation.txt 
+		cat $file | tr  ',' ';' | awk -F ';' '{if($10>11 && $10<18 && $11>-63 && $11<-59){print $0}}' > localisation.txt 
 		if [ $? -ne 0 ] ; then
 			fct_return 'A'
 		fi
@@ -71,7 +93,7 @@ fct_S()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>46 && $10<52 && $11>-60 && $11<-51){print $0}}' > localisation.txt 
+		cat $file | tr  ',' ';' | awk -F ';' '{if($10>46 && $10<52 && $11>-60 && $11<-51){print $0}}' > localisation.txt 
 		if [ $? -ne 0 ] ; then
 			fct_return 'S'
 		fi
@@ -85,7 +107,7 @@ fct_O()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10>-60 && $10<-9 && $11>36 && $11<90){print $0}}' > localisation.txt 
+		cat $file | tr  ',' ';' | awk -F ';' '{if($10>-60 && $10<-9 && $11>36 && $11<90){print $0}}' > localisation.txt 
 		if [ $? -ne 0 ] ; then
 			fct_return 'O'
 		fi
@@ -99,7 +121,7 @@ fct_Q()
 	then 
 		echo "you cannot select more than one location, please try again"
 	else
-		cat meteo_filtered_data_v1.csv | tr  ',' ';' | awk -F ';' '{if($10<-60 && $11<50){print $0}}' > localisation.txt 
+		cat $file | tr  ',' ';' | awk -F ';' '{if($10<-60 && $11<50){print $0}}' > localisation.txt 
 		if [ $? -ne 0 ] ; then
 			fct_return 'Q'
 		fi
@@ -107,7 +129,7 @@ fct_Q()
 	fi
 }
 
-for var in $@; do
+for var in $arg_list; do
 	case $var in
 		"-G") fct_G ;;
 		
@@ -121,13 +143,16 @@ for var in $@; do
 		
 		"-Q") fct_Q ;;
 		
-		*) cat meteo_filtered_data_v1.csv > localisation.txt ;;
+		*) if [ $recurrence -eq 0 ] ; then
+			cat $file > localisation.txt
+		fi ;;
 	esac 
 done
 
 
 
 ## mods
+
 fct_t1()
 {
 	if [ $t1 -gt 0 ]
@@ -218,7 +243,7 @@ fct_w()
 
 
 ## type of sort we will be using and if the sorting will be done in reverse
-for var in $@; do
+for var in $arg_list; do
 	case $var in
 		"--abr") sort=abr ;;
 		"--avl") sort=avl ;;
@@ -231,9 +256,8 @@ done
 
 
 
-echo $#
-echo $@
-for var in $@; do
+
+for var in $arg_list; do
 	case $var in
 		"-t1") fct_t1 ;;
 		"-t2") fct_t2 ;;
@@ -247,5 +271,3 @@ for var in $@; do
 done
 
 echo $sort
-
-## ./test $sort
