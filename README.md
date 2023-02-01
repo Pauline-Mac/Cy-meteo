@@ -3,13 +3,13 @@ project info
 
 Welcome to our project !
 
-You can find down below a list of the arguments you can use and what is essential for the program. Some of them are necessary for our program : 
+You can find down below a list of the arguments you can use and what is essential for the program. Some of them are mandatory for our program to work correctly : 
 
 Mandatory :
   -f<filename.csv> with filename the file with the data necessary
   
   and at least one option :
-    -t1
+    -t1 :
     -t2
     -t3
     -p1
