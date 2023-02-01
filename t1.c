@@ -140,7 +140,16 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	while (p2!=NULL){
 		//update node
 		if (p1->id == data){
-			printf("update list");
+			//update max
+            if(atof(list_champ[3]) > p1->NScoor){
+                p1->NScoor = atof(list_champ[3]);
+            }
+            //update min
+            if(atof(list_champ[2]) > p1->vitesse){
+                p1->vitesse = atof(list_champ[2]);
+            }
+            //update moy
+            p1->angle = (p1->angle + atof(list_champ[1])) / 2;
 			return pHead;
 		}
 		//insert node
@@ -155,7 +164,16 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	}
 	//end of list ADD END
 	if(data == p1->id){
-		printf("updatelist");
+		//update max
+        if(atof(list_champ[3]) > p1->NScoor){
+            p1->NScoor = atof(list_champ[3]);
+        }
+        //update min
+        if(atof(list_champ[2]) > p1->vitesse){
+            p1->vitesse = atof(list_champ[2]);
+        }
+        //update moy
+        p1->angle = (p1->angle + atof(list_champ[1])) / 2;
 	}
 	else{
 		p1->pNext = pAddChainon;
@@ -174,7 +192,16 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 		return creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
 	}
 	else if (data == a->id){
-		printf("update ABR");
+		//update max
+        if(atof(list_champ[3]) > a->NScoor){
+            a->NScoor = atof(list_champ[3]);
+        }
+        //update min
+        if(atof(list_champ[2]) > a->vitesse){
+            a->vitesse = atof(list_champ[2]);
+        }
+        //update moy
+        a->angle = (a->angle + atof(list_champ[1])) / 2;
 	}
 	else if (data < a->id)
 	{
@@ -325,7 +352,16 @@ pArbre insert(pArbre root, char* list_champ[])
 	else if (data == root->id)
 
 	{
-		printf("update");
+		//update max
+        if(atof(list_champ[3]) > root->NScoor){
+            root->NScoor = atof(list_champ[3]);
+        }
+        //update min
+        if(atof(list_champ[2]) > root->vitesse){
+            root->vitesse = atof(list_champ[2]);
+        }
+        //update moy
+        root->angle = (root->angle + atof(list_champ[1])) / 2;
 	}
 
 	else if (data > root->id)
@@ -395,6 +431,17 @@ pArbre insert(pArbre root, char* list_champ[])
 	return root;
 }
 
+int line_regularity(char* sample){
+	// test if the line has empty column
+	// return 1 if line is good 0 if not
+	char* test1 = strstr( sample, ";\n");
+	char* test2 = strstr( sample, ";;");
+	char* test3 = strstr( sample, "; ;");
+	if (test1 == NULL && test2 == NULL && test3 == NULL){
+		return 1;
+	}
+	return 0;
+}
 
 int main(int argc, char **argv)
 {
@@ -454,35 +501,37 @@ int main(int argc, char **argv)
         colomn = 0;
 
         value = strtok(line, ";");
-        while (value)
-        {
+		if(line_regularity(line) == 1){
+			while (value)
+        	{
             
-            champ[colomn] = value;
+            	champ[colomn] = value;
 
-            printf("%s ", champ[colomn]);
-            value = strtok(NULL, ";\n");
-            colomn++;
-        }
-		puts("");
-    	//insertion dans AVL
-		if(AVL){
-			rootDat = insert(rootDat, champ);
+            	printf("%s ", champ[colomn]);
+            	value = strtok(NULL, ";\n");
+            	colomn++;
+        	}
+    		//insertion dans AVL
+			if(AVL){
+				rootDat = insert(rootDat, champ);
+			}
+        
+    		// insertion ABR
+			else if (ABR){
+				rootDat = recursive_insertABR(rootDat, champ);
+			}
+
+			//insertion list
+			else if (LIST){
+				ListDat = insertList(ListDat, champ);
+			}
+
+    		// reinit champ for next line
+       		for (int i = 0; i < 4 ; i++){
+            	champ[i] = "0";
+        	}
 		}
         
-    	// insertion ABR
-		else if (ABR){
-			rootDat = recursive_insertABR(rootDat, champ);
-		}
-
-		//insertion list
-		else if (LIST){
-			ListDat = insertList(ListDat, champ);
-		}
-
-    	// reinit champ for next line
-       	 for (int i = 0; i < 4 ; i++){
-            champ[i] = "0";
-        }
     }
     if (line)
     {

@@ -412,6 +412,18 @@ void SHOWavl(pArbre root){
 }
 
 
+int line_regularity(char* sample){
+	// test if the line has empty column
+	// return 1 if line is good 0 if not
+	char* test1 = strstr( sample, ";\n");
+	char* test2 = strstr( sample, ";;");
+	char* test3 = strstr( sample, "; ;");
+	if (test1 == NULL && test2 == NULL && test3 == NULL){
+		return 1;
+	}
+	return 0;
+}
+
 //après ça on a un avl triée par id station mais comptenant bien l'humidité max par station donc
 //on recréé un avl cette fois triée par l'humidité pour que le parcours infixe soit en foncton de l'humidité
 void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
@@ -445,9 +457,9 @@ void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 
 int main(int argc, char **argv)
 {
-	int AVL = 0;
+	int AVL = 1;
 	int ABR = 0;
-	int LIST = 1;
+	int LIST = 0;
 
 	pArbre rootDat = NULL;
 	pArbre newrootDat = NULL;
@@ -502,31 +514,34 @@ int main(int argc, char **argv)
         colomn = 0;
 
         value = strtok(line, ";");
-        while (value)
-        {
-            champ[colomn] = value;
-            value = strtok(NULL, ";\n");
-            colomn++;
-        }
-    	//insertion dans AVL
-		if(AVL){
-			rootDat = insert(rootDat, champ);
+		if (line_regularity(line) == 1){
+			while (value)
+        	{
+            	champ[colomn] = value;
+            	value = strtok(NULL, ";\n");
+            	colomn++;
+        	}
+    		//insertion dans AVL
+			if(AVL){
+				rootDat = insert(rootDat, champ);
+				}	
+        
+    		// insertion ABR
+			else if (ABR){
+				rootDat = recursive_insertABR(rootDat, champ);
+			}
+
+			//insertion list
+			else if (LIST){
+				ListDat = insertList(ListDat, champ);
+			}
+
+    		// reinit champ for next line
+       		for (int i = 0; i < 4 ; i++){
+            	champ[i] = "0";
+        	}
 		}
         
-    	// insertion ABR
-		else if (ABR){
-			rootDat = recursive_insertABR(rootDat, champ);
-		}
-
-		//insertion list
-		else if (LIST){
-			ListDat = insertList(ListDat, champ);
-		}
-
-    	// reinit champ for next line
-       	 for (int i = 0; i < 4 ; i++){
-            champ[i] = "0";
-        }
     }
     if (line)
     {

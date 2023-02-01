@@ -441,6 +441,18 @@ void SHOWavl(pArbre root){
 	}
 }
 
+int line_regularity(char* sample){
+	// test if the line has empty column
+	// return 1 if line is good 0 if not
+	char* test1 = strstr( sample, ";\n");
+	char* test2 = strstr( sample, ";;");
+	char* test3 = strstr( sample, "; ;");
+	if (test1 == NULL && test2 == NULL && test3 == NULL){
+		return 1;
+	}
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
 	int AVL = 1;
@@ -497,32 +509,35 @@ int main(int argc, char **argv)
         colomn = 0;
 
         value = strtok(line, ";");
-        while (value)
-        {
+		if (line_regularity(line) ==  1){
+			while (value)
+        	{
             
-            champ[colomn] = value;
-            value = strtok(NULL, ";\n");
-            colomn++;
-        }
-    	//insertion dans AVL
-		if(AVL){
-			rootDat = insert(rootDat, champ);
+            	champ[colomn] = value;
+            	value = strtok(NULL, ";\n");
+            	colomn++;
+        	}
+    		//insertion dans AVL
+			if(AVL){
+				rootDat = insert(rootDat, champ);
+			}
+        
+    		// insertion ABR
+			else if (ABR){
+				rootDat = recursive_insertABR(rootDat, champ);
+			}
+
+			//insertion list
+			else if (LIST){
+				ListDat = insertList(ListDat, champ);
+			}
+
+    		// reinit champ for next line
+       		for (int i = 0; i < 2 ; i++){
+            	champ[i] = "0";
+        	}
 		}
         
-    	// insertion ABR
-		else if (ABR){
-			rootDat = recursive_insertABR(rootDat, champ);
-		}
-
-		//insertion list
-		else if (LIST){
-			ListDat = insertList(ListDat, champ);
-		}
-
-    	// reinit champ for next line
-       	 for (int i = 0; i < 2 ; i++){
-            champ[i] = "0";
-        }
     }
     if (line)
     {
