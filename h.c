@@ -60,14 +60,42 @@ void traiter(pArbre a, FILE* outputfile)
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
-	//  in new list ->id : height and ->angle : id
+	
 	while(list!=NULL){
-		fprintf(outputfile, "%f %f %d\n", list->NScoor, list->OEcoor, list->id);
+		fprintf(outputfile, "%f %f %f\n", list->NScoor, list->OEcoor, list->angle);
 		list = list->pNext;
 	}
 }
 
 typedef Arbre *pArbre;
+
+// decreasing sort
+void sortedInsert(Chainon** head_ref, Chainon* new_node) {
+  Chainon *current;
+  if (*head_ref == NULL || (*head_ref)->angle <= new_node->angle) {
+    new_node->pNext = *head_ref;
+    *head_ref = new_node;
+  } else {
+    current = *head_ref;
+    while (current->pNext != NULL && current->pNext->angle > new_node->angle) {
+      current = current->pNext;
+    }
+    new_node->pNext = current->pNext;
+    current->pNext = new_node;
+  }
+}
+
+void sortList(Chainon** head_ref) {
+  Chainon *sorted = NULL;
+  Chainon *current = *head_ref;
+  while (current != NULL) {
+    Chainon *next = current->pNext;
+    sortedInsert(&sorted, current);
+    current = next;
+  }
+  *head_ref = sorted;
+}
+
 
 //FCT LIST
 
@@ -562,6 +590,7 @@ int main(int argc, char **argv)
 		parcoursInfixe(newrootDat, outputFile);
 	}
 	else{
+		sortList(&ListDat);
 		traiterList(ListDat, outputFile);
 		
 	}

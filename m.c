@@ -61,26 +61,54 @@ void traiter(pArbre a, FILE* outputfile)
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
-	//  in new list ->id : moisture and ->angle : id
 	while(list!=NULL){
-		fprintf(outputfile, "%f %f %d\n", list->NScoor, list->OEcoor, list->id);
+		fprintf(outputfile, "%f %f %f\n", list->NScoor, list->OEcoor, list->angle);
 		list = list->pNext;
 	}
 }
 
 typedef Arbre *pArbre;
 
+// decreasing sort
+void sortedInsert(Chainon** head_ref, Chainon* new_node) {
+  Chainon *current;
+  if (*head_ref == NULL || (*head_ref)->angle <= new_node->angle) {
+    new_node->pNext = *head_ref;
+    *head_ref = new_node;
+  } else {
+    current = *head_ref;
+    while (current->pNext != NULL && current->pNext->angle > new_node->angle) {
+      current = current->pNext;
+    }
+    new_node->pNext = current->pNext;
+    current->pNext = new_node;
+  }
+}
+
+void sortList(Chainon** head_ref) {
+  Chainon *sorted = NULL;
+  Chainon *current = *head_ref;
+  while (current != NULL) {
+    Chainon *next = current->pNext;
+    sortedInsert(&sorted, current);
+    current = next;
+  }
+  *head_ref = sorted;
+}
+
+
+
 //FCT LIST
 
-Chainon* creationChainon(int id, float angle, float vitesse, float NScoor, float OEcoor){
+Chainon* creationChainon(int id, float moist, float NScoor,float OEcoor){
 	Chainon* pnew = malloc(sizeof(Chainon));
 	
 	if(pnew == NULL){
 		exit(1);
 	}
 	pnew->id = id;
-    pnew->angle = angle;
-    pnew->vitesse = vitesse;
+    pnew->angle = moist;
+    pnew->vitesse = 0;
     pnew->NScoor = NScoor;
     pnew->OEcoor = OEcoor;
 	pnew->pNext = NULL;
@@ -98,11 +126,11 @@ void AddList(Chainon* pPlace, Chainon* pAddChainon) {
 	pPlace -> pNext = pAddChainon;
 	
 }
-//decreasing list sort
+
 //update needs changes
 Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	int data = atoi(list_champ[0]);
-	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]), atof(list_champ[4]));
+	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
 	Chainon* p1 = malloc(sizeof(Chainon));
 	Chainon* p2 = malloc(sizeof(Chainon));
 	if (p1==NULL || p2 == NULL){
@@ -486,9 +514,9 @@ int line_regularity(char* sample){
 
 int main(int argc, char **argv)
 {
-	int AVL = 1;
+	int AVL = 0;
 	int ABR = 0;
-	int LIST = 0;
+	int LIST = 1;
 
 
 
@@ -596,6 +624,7 @@ int main(int argc, char **argv)
 		parcoursInfixe(newrootDat, outputFile);
 	}
 	else{
+		sortList(&ListDat);
 		traiterList(ListDat, outputFile);
 		
 	}
