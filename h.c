@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define SPACE puts("\n")
+
 
 typedef struct arbre
 {
@@ -431,14 +431,6 @@ pArbre insert(pArbre root, char* list_champ[])
 	return root;
 }
 
-void SHOWavl(pArbre root){
-	if(root!=NULL){
-		SHOWavl(root->fg);
-		printf("%d %.2f %.2f %.2f \n", root->id, root->angle, root->NScoor, root->OEcoor);
-		SHOWavl(root->fd);
-	}
-}
-
 
 int line_regularity(char* sample){
 	// test if the line has empty column
@@ -452,8 +444,7 @@ int line_regularity(char* sample){
 	return 0;
 }
 
-//après ça on a un avl triée par id station mais comptenant bien l'humidité max par station donc
-//on recréé un avl cette fois triée par l'humidité pour que le parcours infixe soit en foncton de l'humidité
+
 void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 	// in old avl we had: id, ns, oe, h
 	//in new avl we will have: h, ns, oe, id
@@ -514,7 +505,6 @@ int main(int argc, char **argv)
     }
 
     puts("file is ok");
-    puts("\n");
 
     FILE *outputFile;
     char *line = NULL;
@@ -530,9 +520,7 @@ int main(int argc, char **argv)
 
     // column name flush
     read = getline(&line, &len, inputFile);
-    // fprintf(outputFile, "%s", line);
     char *value;
-    // double val;
     int colomn;
     char *champ[4] = {"0", "0", "0", "0"};
 	//champ [0] is station id champ[1] is height
@@ -541,8 +529,9 @@ int main(int argc, char **argv)
     {
         colomn = 0;
 
-        value = strtok(line, ";");
+        
 		if (line_regularity(line) == 1){
+			value = strtok(line, ";");
 			while (value)
         	{
             	champ[colomn] = value;
@@ -579,13 +568,13 @@ int main(int argc, char **argv)
     // Add sorted data to outputfile
 	if (AVL){
 		// create new AVL from old AVL
-		//new AVL is sorted by height
+		//new AVL is sorted by height old AVL was sorted by station id
 		parcoursINFIXEaddToNewAVL(rootDat, &newrootDat);
 		parcoursInfixe(newrootDat, outputFile);
 	}
 	else if (ABR){
 		// create new ABR from old ABR
-		//new ABR is sorted by height
+		//new ABR is sorted by height old ABR was sorted by station id
 		parcoursINFIXEaddToNewABR(rootDat, &newrootDat);
 		parcoursInfixe(newrootDat, outputFile);
 	}

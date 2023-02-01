@@ -50,26 +50,27 @@ pArbre creerArbre(int id, float pres)
 	return pnew;
 }
 
-// modification il ne faut pas mettre le num des stations parceque trop eloigné
-// Il faut un conteur i pour le x
-// en y on a graph moy ligne simple
-// en y on a graph min et max en barre d'erreur
-void traiter(pArbre a, FILE* outputfile)
+void traiter(pArbre a, FILE* outputfile, int i)
 {
+
+
+	// add counter at start of every line in outfile to replace station id
+	fprintf(outputfile,"%d",i);
 
 	// add data to output file with modification
 	// x :a->id  y:a->angle  -y : a->vitesse +y : a->NScoor
 
-
-	fprintf(outputfile, "%d %f %f %f\n", a->id, a->angle, a->vitesse, a->NScoor);
+	fprintf(outputfile, " %f %f %f\n", a->angle, a->vitesse, a->NScoor);
 }
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
 	// x :a->id  y:a->angle -y : a->vitesse  +y : a->NScoor
+	int i = 1;
 	while(list!=NULL){
-		fprintf(outputfile, "%d %f %f %f\n", list->id, list->angle, list->vitesse ,list->NScoor );
+		fprintf(outputfile, "%d %f %f %f\n", i, list->angle, list->vitesse ,list->NScoor );
 		list = list->pNext;
+		i++;
 	}
 }
 
@@ -217,13 +218,14 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 
 // FCT AVL
 
-void parcoursInfixe(pArbre a, FILE* outputfile)
+void parcoursInfixe(pArbre a, FILE* outputfile ,int i)
 {
 	if (a != NULL)
 	{
-		parcoursInfixe(a->fg, outputfile);
-		traiter(a, outputfile);
-		parcoursInfixe(a->fd, outputfile);
+		parcoursInfixe(a->fg, outputfile,i);
+		traiter(a, outputfile,i);
+		i++;
+		parcoursInfixe(a->fd, outputfile,i);
 	}
 }
 
@@ -458,6 +460,7 @@ int main(int argc, char **argv)
 	int AVL = 1;
 	int ABR = 0;
 	int LIST = 0;
+	int i=1;
 
 
 	pArbre rootDat = NULL;
@@ -508,8 +511,8 @@ int main(int argc, char **argv)
     {
         colomn = 0;
 
-        value = strtok(line, ";");
 		if (line_regularity(line) ==  1){
+			value = strtok(line, ";");
 			while (value)
         	{
             
@@ -546,7 +549,7 @@ int main(int argc, char **argv)
 
     // Add sorted data to outputfile
 	if (ABR || AVL){
-		parcoursInfixe(rootDat, outputFile);
+		parcoursInfixe(rootDat, outputFile,i);
 	}
 	else{
 		traiterList(ListDat, outputFile);
