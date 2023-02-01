@@ -15,6 +15,7 @@ file=not_define
 while [ $# -gt 0 ] ; do
 	case "$1" in
 	-f) file=$2 ;;
+	--help) cat readme.txt
 	esac 
 shift 
 done
@@ -174,7 +175,7 @@ fct_t2()
 		echo $t2
 		echo "problem detected too many arguments of the same type"
 	else
-		cut -d";" -f1,2,13,14 localisation.txt | tr -d '-' 'T' > t2.txt
+		cut -d";" -f1,2,13,14 localisation.txt | tr -d '-' > t2.txt
 		t3=$((t3+1))
 	fi
 }
@@ -270,4 +271,8 @@ for var in $arg_list; do
 	esac 
 done
 
+if [ $recurrence -eq 0 ] ; then
+	echo "please select an option"
+	exit 1
+fi
 echo $sort
