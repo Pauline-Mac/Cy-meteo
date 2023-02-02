@@ -1,0 +1,5 @@
+set title "mod t2"
+set xlabel "date" 
+set ylabel "temp"
+
+plot "output_t2.txt" smooth mcspline lw 2 title "temp"

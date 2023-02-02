@@ -1,0 +1,1 @@
+plot "output_h.txt" using 1:2:3 with image
