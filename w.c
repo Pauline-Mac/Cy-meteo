@@ -1,12 +1,12 @@
 // we take: id, direction, vitesse, ns, oe
+//output file format: x1 y1 x2 y2
 
-// ADD ACCORDING TO FIRST VALUE
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define SPACE puts("\n")
+
 
 typedef struct arbre
 {
@@ -522,13 +522,6 @@ int main(int argc, char **argv)
 	}
 	else{
 		traiterList(ListDat, outputFile);
-		/*
-		puts("List last");
-		while(ListDat){
-			printf("%d \n",ListDat->id);
-			ListDat = ListDat->pNext;
-		}
-		*/
 		
 	}
     
