@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define SPACE puts("\n")
+
 
 typedef struct arbre
 {
