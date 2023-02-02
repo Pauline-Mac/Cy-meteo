@@ -63,11 +63,11 @@ void traiter(pArbre a, FILE* outputfile)
 	sprintf(str,"%d",a->id);
 
 	if (strlen(str2)==3){
-		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], a->angle/a->counter);
+		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], a->angle/a->counter);
 	}
 	else{
 		printf("%ld",strlen(str2));
-		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], a->angle/a->counter);
+		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], a->angle/a->counter);
 	}
 }
 
@@ -80,11 +80,11 @@ void traiterList(Chainon* list, FILE* outputfile){
 		gcvt(list->vitesse,5,str2);
 		sprintf(str,"%d",list->id);
 		if (strlen(str2)==3){
-			fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], list->angle/list->counter);
+			fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], list->angle/list->counter);
 		}
 		else{
 			printf("%ld",strlen(str2));
-			fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], list->angle/list->counter);
+			fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], list->angle/list->counter);
 		}
 		list = list->pNext;
 	}
