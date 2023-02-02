@@ -254,7 +254,7 @@ fct_h()
 		echo $h
 		echo "problem detected too many arguments of the same type"
 	else
-		cut -d";" -f10,11,15 localisation.txt > h.txt
+		cut -d";" -f1,10,11,15 localisation.txt > h.txt
 		h=$((h+1))
 		./h h.txt output_h.txt --$sort
 		
@@ -269,7 +269,7 @@ fct_m()
 		echo $m
 		echo "problem detected too many arguments of the same type"
 	else
-		cut -d";" -f6,10,11 localisation.txt > m.txt
+		cut -d";" -f1,6,10,11 localisation.txt > m.txt
 		m=$((m+1))
 		./m m.txt output_m.txt --$sort
 		
