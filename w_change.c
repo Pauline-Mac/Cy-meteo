@@ -330,16 +330,14 @@ pArbre insert(pArbre root, char* list_champ[])
 	}
 	// update node
 	else if (data == root->id)
-
 	{
 		//update moy angle
-		root->angle = root->angle + atof(list_champ[1]);
+		root->angle = root->angle + root->OEcoor + atof(list_champ[2])*cos(atof(list_champ[1]));
 		//update counter
 		root->counter = root->counter + 1;
 		//update moy vitesse
-		root->vitesse = root->vitesse + atof(list_champ[2]);
+		root->vitesse = root->vitesse + root->NScoor + atof(list_champ[2])*cos(atof(list_champ[1]));
 	}
-
 	else if (data > root->id)
 
 	{
