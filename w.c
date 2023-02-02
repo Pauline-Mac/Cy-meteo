@@ -417,9 +417,26 @@ int line_regularity(char* sample){
 
 int main(int argc, char **argv)
 {
-	int AVL = 1;
+	// take out ./exe argument in argument count and in argument list
+    argc--;
+    argv++;
+
+	int AVL = 0;
 	int ABR = 0;
-	int LIST = 0;
+	int LIST =0;
+
+	if(strcmp(argv[2],"--avl") == 0){
+		AVL = 1;
+	}
+	else if(strcmp(argv[2],"--abr") == 0){
+		ABR = 1;
+	}
+	else if(strcmp(argv[2],"--tab") == 0){
+		LIST = 1;
+	}
+	else{
+		AVL = 1;
+	}
 
 
 	pArbre rootDat = NULL;
@@ -428,9 +445,6 @@ int main(int argc, char **argv)
 
     FILE *inputFile;
 
-    // take out ./exe argument in argument count and in argument list
-    argc--;
-    argv++;
 
     if (argc == 0)
     {
