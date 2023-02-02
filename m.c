@@ -1,12 +1,10 @@
 // we take: id, humidité, ns, oe
-
-// ADD ACCORDING TO FIRST VALUE
+// output fil format: ns, oe, max moist
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define SPACE puts("\n")
 
 typedef struct arbre
 {
@@ -127,7 +125,7 @@ void AddList(Chainon* pPlace, Chainon* pAddChainon) {
 	
 }
 
-//update needs changes
+
 Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	int data = atoi(list_champ[0]);
 	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
@@ -196,7 +194,6 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 }
 
 // FCT ABR
-//update part needs changes
 pArbre recursive_insertABR(pArbre a, char* list_champ[])
 {
 	int data = atoi(list_champ[0]);
@@ -363,7 +360,6 @@ pArbre doubleRotationDroite(pArbre a)
 
 
 
-//update section needs an update maybe a fonction for each insertion
 pArbre insert(pArbre root, char* list_champ[], int update_status)
 
 {
@@ -464,17 +460,7 @@ pArbre insert(pArbre root, char* list_champ[], int update_status)
 	return root;
 }
 
-void SHOWavl(pArbre root){
-	if(root!=NULL){
-		SHOWavl(root->fg);
-		printf("%d %.2f %.2f %.2f \n", root->id, root->angle, root->NScoor, root->OEcoor);
-		SHOWavl(root->fd);
-	}
-}
 
-
-//après ça on a un avl triée par id station mais comptenant bien l'humidité max par station donc
-//on recréé un avl cette fois triée par l'humidité pour que le parcours infixe soit en foncton de l'humidité
 void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 	if (root!=NULL){
 		parcoursINFIXEaddToNewAVL(root->fg, newroot);
@@ -573,7 +559,6 @@ int main(int argc, char **argv)
 
     // column name flush
     read = getline(&line, &len, inputFile);
-    // fprintf(outputFile, "%s", line);
     char *value;
     // double val;
     int colomn;
@@ -590,11 +575,9 @@ int main(int argc, char **argv)
             
             	champ[colomn] = value;
 
-            	//printf("%s ", champ[colomn]);
             	value = strtok(NULL, ";\n");
             	colomn++;
         	}
-			//puts("");
     		//insertion dans AVL
 			if(AVL){
 				rootDat = insert(rootDat, champ,1);
