@@ -182,8 +182,26 @@ fct_t1()
 		t1=$((t1+1))
 		./t1 t1.txt output_t1.txt --$sort ## executing the c program and looking if it succeed to finish without any errors
 		
-		gnuplot -persist gnp_1.gnp ## writing the gnuplot scheme associated
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi
 		
+		gnuplot -persist gnp_t1.gnp ## writing the gnuplot scheme associated
+		
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
@@ -197,25 +215,28 @@ fct_t2()
 		cut -d";" -f1,2,13,14 localisation.txt | tr -d '-' > t2.txt
 		t2=$((t2+1))
 		./t2 t2.txt output_t2.txt --$sort
-		
-		gnuplot -persist gnp_2.gnp
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi		
+		gnuplot -persist gnp_t2.gnp
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
-fct_t3()
-{
-	if [ $t3 -gt 0 ]
-	then 
-		echo $t3
-		echo "problem detected too many arguments of the same type"
-	else
-		cut -d";" -f1,2,13,14 localisation.txt > t3.txt
-		t3=$((t3+1))
-		./t3 t3.txt output_t3.txt --$sort
-		
-		gnuplot -persist gnp_3.gnp
-	fi
-}
+
 
 fct_p1()
 {
@@ -227,8 +248,24 @@ fct_p1()
 		cut -d";" -f1,7 localisation.txt > p1.txt
 		p1=$((p1+1))
 		./p1 p1.txt output_p1.txt --$sort
-		
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi		
 		gnuplot -persist gnp_1.gnp
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
@@ -242,8 +279,24 @@ fct_p2()
 		cut -d";" -f1,2,7 localisation.txt > p2.txt
 		p2=$((p2+1))
 		./p2 p2.txt output_p2.txt --$sort
-		
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi		
 		gnuplot -persist gnp_2.gnp
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
@@ -257,8 +310,24 @@ fct_h()
 		cut -d";" -f1,10,11,15 localisation.txt > h.txt
 		h=$((h+1))
 		./h h.txt output_h.txt --$sort
-		
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi		
 		gnuplot -persist gnp_h.gnp
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
@@ -272,8 +341,24 @@ fct_m()
 		cut -d";" -f1,6,10,11 localisation.txt > m.txt
 		m=$((m+1))
 		./m m.txt output_m.txt --$sort
-		
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi		
 		gnuplot -persist gnp_m.gnp
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
@@ -287,8 +372,24 @@ fct_w()
 		cut -d";" -f1,4,5,10,11 localisation.txt > w.txt
 		w=$((w+1))
 		./w w.txt output_w.txt --$sort
-		
+		if [ $? -eq 1 ] ; then
+			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
+			exit 2
+		elif [ $? -eq 2 ] ; then
+			echo "error with the input data file (unable to open it, unable to read the content, incorrect data format, ...)"
+			exit 2
+		elif [ $? -eq 3 ] ; then
+			echo "error with the output data file (impossible to open it, to write in it, ...)"
+			exit 2
+		elif [ $? -ge 4 ] ; then
+			echo "other internal error"
+			exit 2
+		fi		
 		gnuplot -persist gnp_w.gnp
+		if [ $? -ne 0 ] ; then
+			echo "error on gnuplot"
+			exit 3
+		fi
 	fi
 }
 
@@ -301,7 +402,6 @@ for var in $arg_list; do
 		"--abr") sort=abr ;;
 		"--avl") sort=avl ;;
 		"--tab") sort=tab ;;
-		"-r") reverse=yes ;;
 	esac
 done
 
@@ -314,7 +414,6 @@ for var in $arg_list; do
 	case $var in
 		"-t1") fct_t1 ;;
 		"-t2") fct_t2 ;;
-		"-t3") fct_t3 ;;
 		"-p1") fct_p1 ;;
 		"-h") fct_h ;;
 		"-m") fct_m ;;
@@ -324,8 +423,10 @@ for var in $arg_list; do
 done
 
 ## in case not any mods selected, exit
-if [ $recurrence -eq 0 ] ; then
+if [[ $recurrence -eq 0 && $t1 -eq 0 && $p1 -eq 0 && $w -eq 0 && $h -eq 0 && $m -eq 0 && $t2 -eq 0 && $p2 -eq 0 ]] ; then
 	echo "please select an option"
 	exit 1
 fi
 
+echo "the program was executed successfully"
+exit 0
