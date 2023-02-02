@@ -1,4 +1,5 @@
 // we take: id, ns, oe, Altitude
+//output format : ns, oe, height 
 
 
 #include <stdio.h>
