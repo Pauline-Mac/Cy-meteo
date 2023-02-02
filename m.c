@@ -516,8 +516,20 @@ int main(int argc, char **argv)
 {
 	int AVL = 0;
 	int ABR = 0;
-	int LIST = 1;
+	int LIST =0;
 
+	if(strcmp(argv[2],"--avl") == 0){
+		AVL = 1;
+	}
+	else if(strcmp(argv[2],"--abr") == 0){
+		ABR = 1;
+	}
+	else if(strcmp(argv[2],"--tab") == 0){
+		LIST = 1;
+	}
+	else{
+		AVL = 1;
+	}
 
 
 	pArbre rootDat = NULL;
