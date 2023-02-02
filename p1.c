@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define SPACE puts("\n")
 
 typedef struct arbre
 {
@@ -435,13 +434,6 @@ pArbre insert(pArbre root, char* list_champ[])
 	return root;
 }
 
-void SHOWavl(pArbre root){
-	if(root!=NULL){
-		SHOWavl(root->fg);
-		printf("%d %.2f %.2f %.2f \n", root->id, root->angle, root->vitesse, root->NScoor);
-		SHOWavl(root->fd);
-	}
-}
 
 int line_regularity(char* sample){
 	// test if the line has empty column
@@ -569,8 +561,7 @@ int main(int argc, char **argv)
 	else{
 		traiterList(ListDat, outputFile);
 	}
-    
-	SHOWavl(rootDat);
+ 
 
 
     fclose(inputFile);
