@@ -1,0 +1,4 @@
+set pm3d map interpolate 0,0
+set dgrid3d
+set palette color positive
+splot 'output_m.txt'
