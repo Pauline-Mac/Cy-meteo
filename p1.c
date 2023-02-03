@@ -61,6 +61,7 @@ void traiter(pArbre a, FILE* outputfile, int* i)
 	// x :a->id  y:a->angle  -y : a->vitesse +y : a->NScoor
 
 	fprintf(outputfile, " %f %f %f\n", a->angle, a->vitesse, a->NScoor);
+
 }
 
 void traiterList(Chainon* list, FILE* outputfile){
@@ -149,8 +150,8 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 			if (atof(list_champ[1]) < p1->vitesse){
 				p1->angle =atof(list_champ[1]);
 			}
-			//update moy
-			p1->angle = (p1->angle + atof(list_champ[1])) / 2;
+			//update moy sommme moy
+			p1->angle = (p1->angle + atof(list_champ[1]))/2;
 			return pHead;
 		}
 		//insert node
@@ -173,8 +174,8 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 		if (atof(list_champ[1]) < p1->vitesse){
 			p1->angle =atof(list_champ[1]);
 		}
-		//update moy
-		p1->angle = (p1->angle + atof(list_champ[1])) / 2;
+		//update moy somme moy
+		p1->angle = (p1->angle + atof(list_champ[1]))/2;
 	}
 	else{
 		p1->pNext = pAddChainon;
@@ -201,8 +202,8 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 		if (atof(list_champ[1]) < a->vitesse){
 			a->angle =atof(list_champ[1]);
 		}
-		//update moy
-		a->angle = (a->angle + atof(list_champ[1])) / 2;
+		//update moy somme moy
+		a->angle = (a->angle + atof(list_champ[1]))/2;
 	}
 	else if (data < a->id)
 	{
@@ -362,9 +363,9 @@ pArbre insert(pArbre root, char* list_champ[])
 		if (atof(list_champ[1]) < root->vitesse){
 			root->angle = atof(list_champ[1]);
 		}
-		//update moy
-		root->angle = (root->angle + atof(list_champ[1])) / 2;
-
+		//update moy somme moy
+		root->angle = (root->angle + atof(list_champ[1]))/2;
+		
 	}
 
 	else if (data > root->id)
@@ -564,7 +565,8 @@ int main(int argc, char **argv)
 	else{
 		traiterList(ListDat, outputFile);
 	}
- 
+	
+
 
 
     fclose(inputFile);

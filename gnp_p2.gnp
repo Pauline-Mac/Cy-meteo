@@ -1,0 +1,9 @@
+set title "mod t2"
+set xlabel "date" 
+set ylabel "pressure"
+set xdata time
+set timefmt "%Y-%m-%d %H:%M"
+set format x "%Y-%m-%d\n%H:%M"
+set xlabel "Time"
+set xrange["2010-01-05":"2020-01-25"]
+plot "output_p2.txt" using 1:2 t "inbound" w lines title "temp"

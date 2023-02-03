@@ -1,10 +1,12 @@
 // we take: id, humidité, ns, oe
-// output fil format: ns, oe, max moist
+
+// ADD ACCORDING TO FIRST VALUE
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#define SPACE puts("\n")
 
 typedef struct arbre
 {
@@ -54,13 +56,13 @@ void traiter(pArbre a, FILE* outputfile)
 	// in new tree ->id : moisture and ->angle : id
 
 
-	fprintf(outputfile, "%f %f %d\n", a->NScoor, a->OEcoor, a->id);
+	fprintf(outputfile, "%f %f %d\n", a->OEcoor, a->NScoor, a->id);
 }
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
 	while(list!=NULL){
-		fprintf(outputfile, "%f %f %f\n", list->NScoor, list->OEcoor, list->angle);
+		fprintf(outputfile, "%f %f %f\n", list->OEcoor, list->NScoor, list->angle);
 		list = list->pNext;
 	}
 }
@@ -125,7 +127,7 @@ void AddList(Chainon* pPlace, Chainon* pAddChainon) {
 	
 }
 
-
+//update needs changes
 Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	int data = atoi(list_champ[0]);
 	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
@@ -194,6 +196,7 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 }
 
 // FCT ABR
+//update part needs changes
 pArbre recursive_insertABR(pArbre a, char* list_champ[])
 {
 	int data = atoi(list_champ[0]);
@@ -360,6 +363,7 @@ pArbre doubleRotationDroite(pArbre a)
 
 
 
+//update section needs an update maybe a fonction for each insertion
 pArbre insert(pArbre root, char* list_champ[], int update_status)
 
 {
@@ -460,7 +464,17 @@ pArbre insert(pArbre root, char* list_champ[], int update_status)
 	return root;
 }
 
+void SHOWavl(pArbre root){
+	if(root!=NULL){
+		SHOWavl(root->fg);
+		printf("%d %.2f %.2f %.2f \n", root->id, root->angle, root->NScoor, root->OEcoor);
+		SHOWavl(root->fd);
+	}
+}
 
+
+//après ça on a un avl triée par id station mais comptenant bien l'humidité max par station donc
+//on recréé un avl cette fois triée par l'humidité pour que le parcours infixe soit en foncton de l'humidité
 void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 	if (root!=NULL){
 		parcoursINFIXEaddToNewAVL(root->fg, newroot);
@@ -500,26 +514,10 @@ int line_regularity(char* sample){
 
 int main(int argc, char **argv)
 {
-	    // take out ./exe argument in argument count and in argument list
-    argc--;
-    argv++;
-	
 	int AVL = 0;
 	int ABR = 0;
-	int LIST =0;
+	int LIST = 1;
 
-	if(strcmp(argv[2],"--avl") == 0){
-		AVL = 1;
-	}
-	else if(strcmp(argv[2],"--abr") == 0){
-		ABR = 1;
-	}
-	else if(strcmp(argv[2],"--tab") == 0){
-		LIST = 1;
-	}
-	else{
-		AVL = 1;
-	}
 
 
 	pArbre rootDat = NULL;
@@ -528,6 +526,10 @@ int main(int argc, char **argv)
    
 
     FILE *inputFile;
+
+    // take out ./exe argument in argument count and in argument list
+    argc--;
+    argv++;
 
     if (argc == 0)
     {
@@ -559,6 +561,7 @@ int main(int argc, char **argv)
 
     // column name flush
     read = getline(&line, &len, inputFile);
+    // fprintf(outputFile, "%s", line);
     char *value;
     // double val;
     int colomn;
@@ -575,9 +578,11 @@ int main(int argc, char **argv)
             
             	champ[colomn] = value;
 
+            	//printf("%s ", champ[colomn]);
             	value = strtok(NULL, ";\n");
             	colomn++;
         	}
+			//puts("");
     		//insertion dans AVL
 			if(AVL){
 				rootDat = insert(rootDat, champ,1);

@@ -1,16 +1,16 @@
-// we take: id, ns, oe, Altitude
-//output format : ns, oe, height 
+// we take: Date, Température
+//output file:   x  y
+
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-
 
 typedef struct arbre
 {
     int id;
+	int counter;
     float vitesse;
     float NScoor;
     float OEcoor;
@@ -21,6 +21,7 @@ typedef struct arbre
 } Arbre;
 typedef struct chainon{
 	int id;
+	int counter;
     float vitesse;
     float NScoor;
     float OEcoor;
@@ -31,18 +32,20 @@ typedef struct chainon{
 typedef Arbre *pArbre;
 
 
-pArbre creerArbre(int id,float NScoor, float OEcoor, float height )
+pArbre creerArbre(int date, float hour, float temp)
 {
+
 	pArbre pnew = malloc(sizeof(Arbre));
 	if (pnew == NULL)
 	{
 		exit(1);
 	}
-	pnew->id = id;
-    pnew->angle = height;
-	pnew->vitesse = 0;
-	pnew->NScoor =NScoor;
-	pnew->OEcoor = OEcoor;
+	pnew->counter = 1;
+	pnew->id = date;
+	pnew->angle = temp;
+    pnew->vitesse = hour;
+    pnew->NScoor = 0;
+    pnew->OEcoor = 0;
 	pnew->fg = NULL;
 	pnew->fd = NULL;
 	pnew->eq = 0;
@@ -53,64 +56,55 @@ void traiter(pArbre a, FILE* outputfile)
 {
 
 	// add data to output file
-	// in new tree ->id : moisture and ->angle : id
+	// x :a->id  y:a->angle
+	char str[20];
+	char str2[6];
+	gcvt(a->vitesse,5,str2);
+	sprintf(str,"%d",a->id);
 
-
-	fprintf(outputfile, "%f %f %d\n", a->OEcoor, a->NScoor, a->id);
+	if (strlen(str2)==3){
+		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], a->angle/a->counter);
+	}
+	else{
+		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], a->angle/a->counter);
+	}
 }
 
 void traiterList(Chainon* list, FILE* outputfile){
 	// add data to output file with modification
-	
+	// x :a->id  y:a->angle
+	char str[20];
+	char str2[6];
 	while(list!=NULL){
-		fprintf(outputfile, "%f %f %f\n", list->OEcoor, list->NScoor, list->angle);
+		gcvt(list->vitesse,5,str2);
+		sprintf(str,"%d",list->id);
+		if (strlen(str2)==3){
+			fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], list->angle/list->counter);
+		}
+		else{
+			printf("%ld",strlen(str2));
+			fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], list->angle/list->counter);
+		}
 		list = list->pNext;
 	}
 }
 
 typedef Arbre *pArbre;
 
-// decreasing sort
-void sortedInsert(Chainon** head_ref, Chainon* new_node) {
-  Chainon *current;
-  if (*head_ref == NULL || (*head_ref)->angle <= new_node->angle) {
-    new_node->pNext = *head_ref;
-    *head_ref = new_node;
-  } else {
-    current = *head_ref;
-    while (current->pNext != NULL && current->pNext->angle > new_node->angle) {
-      current = current->pNext;
-    }
-    new_node->pNext = current->pNext;
-    current->pNext = new_node;
-  }
-}
-
-void sortList(Chainon** head_ref) {
-  Chainon *sorted = NULL;
-  Chainon *current = *head_ref;
-  while (current != NULL) {
-    Chainon *next = current->pNext;
-    sortedInsert(&sorted, current);
-    current = next;
-  }
-  *head_ref = sorted;
-}
-
-
 //FCT LIST
 
-Chainon* creationChainon(int id,float NScoor, float OEcoor, float height){
+Chainon* creationChainon(int date,float hour, float temp){
 	Chainon* pnew = malloc(sizeof(Chainon));
 	
 	if(pnew == NULL){
 		exit(1);
 	}
-	pnew->id = id;
-    pnew->angle = height;
-    pnew->vitesse = 0;
-    pnew->NScoor = NScoor;
-    pnew->OEcoor = OEcoor;
+	pnew->counter = 1;
+	pnew->id = date;
+    pnew->angle = temp;
+    pnew->vitesse = hour;
+    pnew->NScoor = 0;
+    pnew->OEcoor = 0;
 	pnew->pNext = NULL;
 	return pnew;
 }
@@ -126,10 +120,16 @@ void AddList(Chainon* pPlace, Chainon* pAddChainon) {
 	pPlace -> pNext = pAddChainon;
 	
 }
-//decreasing list sort
+
 Chainon* insertList(Chainon* pHead, char* list_champ[]){
-	int data = atoi(list_champ[0]);
-	Chainon* pAddChainon = creationChainon(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]) );
+	int date;
+	int hour;
+	int min;
+	sscanf(list_champ[0], "%dT%d:%d", &date,&hour, &min);
+
+	int data1 = date;
+	int data2 = hour*100 + min;
+	Chainon* pAddChainon = creationChainon(data1,data2,atof(list_champ[1]));
 	Chainon* p1 = malloc(sizeof(Chainon));
 	Chainon* p2 = malloc(sizeof(Chainon));
 	if (p1==NULL || p2 == NULL){
@@ -141,7 +141,7 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 	}
 	//one node list
 	if (pHead->pNext == NULL){
-		if (pHead->id <= data){
+		if (pHead->id <= data1 || (pHead->id == data1 && pHead->vitesse <= data2)){
 			pHead->pNext = pAddChainon;
 			return pHead;
 		}
@@ -152,20 +152,24 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 		
 	}
 	//add start
-	if (pHead->id > data){
+	if (pHead->id > data1 || (pHead->id == data1 && pHead->vitesse > data2)){
 		pAddChainon->pNext = pHead;
 		return pAddChainon;
 	}
-
 
 	p1 = pHead;
 	p2 = pHead->pNext;
 	while (p2!=NULL){
 		//update node
-		if (p1->id == data){
+		if (p1->id == data1 && p1->vitesse == data2){
+			// update temperature
+			p1->angle = p1->angle + atof(list_champ[1]);
+			//counter increase by one
+			p1->counter = p1->counter +1;
+			return pHead;
 		}
 		//insert node
-		if (data > p1->id && data<p2->id){	
+		if ((data1 > p1->id || (data1 == p1->id && data2 > p1->vitesse)) && (data1<p2->id || (data1 == p2->id && data2 < p2->vitesse))){	
 			AddList(p1,pAddChainon);
 			return pHead;
 		}
@@ -175,7 +179,13 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 		}
 	}
 	//end of list ADD END
-	if(data != p1->id){
+	if(data1 == p1->id && data2 == p1->vitesse){
+		// update temperature
+		p1->angle = p1->angle + atof(list_champ[1]);
+		//counter increase by one
+		p1->counter = p1->counter +1;
+	}
+	else{
 		p1->pNext = pAddChainon;
 	}
 	return pHead;
@@ -186,59 +196,48 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
 // FCT ABR
 pArbre recursive_insertABR(pArbre a, char* list_champ[])
 {
-	int data = atoi(list_champ[0]);
+	int date;
+	int hour;
+	int min;
+	sscanf(list_champ[0], "%dT%d:%d", &date,&hour, &min);
+
+	int data1 = date;
+	int data2 = hour*100 + min;
+
+
+	
 	if (a == NULL)
 	{
-		return creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
+		return creerArbre(data1,data2,atof(list_champ[1]));
 	}
-	else if (data < a->id)
+	else if (data1 == a->id && data2 == a->vitesse){
+		// update temperature
+		a->angle = a->angle + atof(list_champ[1]);
+		//counter increase by one
+		a->counter = a->counter +1;
+	}
+	else if (data1 < a->id ||(data2 < a->vitesse && data1 == a->id))
 	{
 		a->fg = recursive_insertABR(a->fg, list_champ);
 	}
-	else if (data > a->id)
+	else if (data1 > a->id ||(data2 > a->vitesse && data1 == a->id))
 	{
 		a->fd = recursive_insertABR(a->fd, list_champ);
 	}
 	return a;
 }
 
-void parcoursINFIXEaddToNewABR(pArbre root, pArbre* newroot){
-	if (root!=NULL){
-		parcoursINFIXEaddToNewABR(root->fg, newroot);
-		char res1[50];
-		char res2[50];
-		char res3[50];
-		char res4[50];
-		char* chps[4];
-		//int value to string
-		sprintf(res4, "%d", root->id);
-		//float value to string
-		sprintf(res1,"%.5f", root->angle);
-		sprintf(res2, "%.5f", root->NScoor);
-		sprintf(res3, "%.5f", root->OEcoor);
-		chps[0] = res1;
-		chps[1] = res2;
-		chps[2] = res3;
-		chps[3] = res4;
-		//insert in new ABR
-		*newroot = recursive_insertABR(*newroot, chps);
-		parcoursINFIXEaddToNewABR(root->fd, newroot);
-	}
-}
 
 // FCT AVL
 
-// (change) DISPLAY in decreasing order
 void parcoursInfixe(pArbre a, FILE* outputfile)
 {
 	if (a != NULL)
 	{
-		//switch fg and fd
-		parcoursInfixe(a->fd, outputfile);
-		traiter(a, outputfile);
 		parcoursInfixe(a->fg, outputfile);
+		traiter(a, outputfile);
+		parcoursInfixe(a->fd, outputfile);
 	}
-	
 }
 
 int min2(int a, int b, int c)
@@ -341,18 +340,35 @@ pArbre doubleRotationDroite(pArbre a)
 	return rotationDroite(a);
 }
 
-
+int line_regularity(char* sample){
+	// test if the line has empty column
+	// return 1 if line is good 0 if not
+	char* test1 = strstr( sample, ";\n");
+	char* test2 = strstr( sample, ";;");
+	char* test3 = strstr( sample, "; ;");
+	if (test1 == NULL && test2 == NULL && test3 == NULL){
+		return 1;
+	}
+	return 0;
+}
 
 pArbre insert(pArbre root, char* list_champ[])
 
 {
-    int data = atoi(list_champ[0]);
-    //data for code
+	int date;
+	int hour;
+	int min;
+	sscanf(list_champ[0], "%dT%d:%d", &date,&hour, &min);
+
+	int data1 = date;
+	int data2 = hour*100 + min;
+
+
 	if (root == NULL)
 
 	{
 
-		pArbre new_node = creerArbre(data,atof(list_champ[1]), atof(list_champ[2]), atof(list_champ[3]));
+		pArbre new_node = creerArbre(data1,data2,atof(list_champ[1]));
 
 		if (new_node == NULL)
 
@@ -363,8 +379,17 @@ pArbre insert(pArbre root, char* list_champ[])
 
 		root = new_node;
 	}
+	// update node
+	else if (data1 == root->id && data2 == root->vitesse)
 
-	else if (data > root->id)
+	{
+		// update temperature
+		root->angle = root->angle + atof(list_champ[1]);
+		//counter increase by one
+		root->counter = root->counter +1;
+	}
+
+	else if (data1 > root->id ||(data2 > root->vitesse && data1 == root->id))
 
 	{
 
@@ -378,7 +403,7 @@ pArbre insert(pArbre root, char* list_champ[])
 
 		{
 
-			if (data > root->fd->id)
+			if (data1 > root->fd->id ||(data2 > root->fd->vitesse && data1 == root->fd->id))
 
 			{
 
@@ -396,10 +421,9 @@ pArbre insert(pArbre root, char* list_champ[])
 		}
 	}
 
-	else if (data < root->id)
+	else
 
 	{
-
 		// insert the new node to the left
 
 		root->fg = insert(root->fg, list_champ);
@@ -410,7 +434,7 @@ pArbre insert(pArbre root, char* list_champ[])
 
 		{
 
-			if (data < root->fg->id)
+			if (data1 < root->fg->id ||(data2 < root->fg->vitesse && data1 == root->fg->id))
 
 			{
 
@@ -431,63 +455,23 @@ pArbre insert(pArbre root, char* list_champ[])
 	return root;
 }
 
-
-int line_regularity(char* sample){
-	// test if the line has empty column
-	// return 1 if line is good 0 if not
-	char* test1 = strstr( sample, ";\n");
-	char* test2 = strstr( sample, ";;");
-	char* test3 = strstr( sample, "; ;");
-	if (test1 == NULL && test2 == NULL && test3 == NULL){
-		return 1;
-	}
-	return 0;
-}
-
-
-void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
-	// in old avl we had id, ns, oe, h
-	//in new avl we will have: h, ns, oe,id
-	if (root!=NULL){
-		parcoursINFIXEaddToNewAVL(root->fg, newroot);
-		char res1[50];
-		char res2[50];
-		char res3[50];
-		char res4[50];
-		char* chps[4];
-		//int value to string
-		sprintf(res4, "%d", root->id); // --> after creerarbre to --> angle
-		//float value to string
-		sprintf(res1,"%.5f", root->angle); //--> after creerarbre to --> id
-		sprintf(res2, "%.5f", root->NScoor);
-		sprintf(res3, "%.5f", root->OEcoor);
-		chps[0] = res1;
-		chps[1] = res2;
-		chps[2] = res3;
-		chps[3] = res4;
-		//insert in new AVL
-		// in new avl champs in order: height, id, ns, oe
-		*newroot = insert(*newroot, chps);
-		parcoursINFIXEaddToNewAVL(root->fd, newroot);
+void SHOWavl(pArbre root){
+	if(root!=NULL){
+		SHOWavl(root->fg);
+		printf("%d %.2f  \n", root->id, root->angle);
+		SHOWavl(root->fd);
 	}
 }
-
-pArbre SHOW_AVL(pArbre root){
-	if (root!=NULL)
-	{
-
-	}
-}
-
 
 int main(int argc, char **argv)
 {
-	 // take out ./exe argument in argument count and in argument list
+	    // take out ./exe argument in argument count and in argument list
     argc--;
     argv++;
+	
 	int AVL = 0;
 	int ABR = 0;
-	int LIST =0;
+	int LIST = 0;
 
 	if(strcmp(argv[2],"--avl") == 0){
 		AVL = 1;
@@ -501,15 +485,12 @@ int main(int argc, char **argv)
 	else{
 		AVL = 1;
 	}
-	
+
 	pArbre rootDat = NULL;
-	pArbre newrootDat = NULL;
 	Chainon* ListDat = NULL;
    
 
     FILE *inputFile;
-
- 
 
     if (argc == 0)
     {
@@ -540,45 +521,44 @@ int main(int argc, char **argv)
 
     // column name flush
     read = getline(&line, &len, inputFile);
+
     char *value;
     int colomn;
-    char *champ[4] = {"0", "0", "0", "0"};
-	//champ [0] is station id champ[1] is height
+    char *champ[2] = {"0", "0"};
 
     while ((read = getline(&line, &len, inputFile)) != -1)
     {
         colomn = 0;
-
-        
-		if (line_regularity(line) == 1){
-			value = strtok(line, ";");
-			while (value)
+		if (line_regularity(line)== 1){
+			value = strtok(line, ";\n");
+        	while (value)
         	{
+            
             	champ[colomn] = value;
             	value = strtok(NULL, ";\n");
             	colomn++;
+			
         	}
     		//insertion dans AVL
+			
 			if(AVL){
 				rootDat = insert(rootDat, champ);
-				}	
-        
+				
+			}
     		// insertion ABR
 			else if (ABR){
 				rootDat = recursive_insertABR(rootDat, champ);
 			}
-
 			//insertion list
 			else if (LIST){
 				ListDat = insertList(ListDat, champ);
 			}
 
     		// reinit champ for next line
-       		for (int i = 0; i < 4 ; i++){
+       		for (int i = 0; i < 2 ; i++){
             	champ[i] = "0";
         	}
 		}
-        
     }
     if (line)
     {
@@ -586,24 +566,13 @@ int main(int argc, char **argv)
     }
 
     // Add sorted data to outputfile
-	if (AVL){
-		// create new AVL from old AVL
-		//new AVL is sorted by height old AVL was sorted by station id
-		parcoursINFIXEaddToNewAVL(rootDat, &newrootDat);
-		parcoursInfixe(newrootDat, outputFile);
+	if (ABR || AVL){
+		parcoursInfixe(rootDat, outputFile);
 	}
-	else if (ABR){
-		// create new ABR from old ABR
-		//new ABR is sorted by height old ABR was sorted by station id
-		parcoursINFIXEaddToNewABR(rootDat, &newrootDat);
-		parcoursInfixe(newrootDat, outputFile);
-	}
+
 	else{
-		sortList(&ListDat);
 		traiterList(ListDat, outputFile);
-		
 	}
-    
 
 
     fclose(inputFile);

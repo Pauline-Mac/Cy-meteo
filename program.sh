@@ -49,10 +49,8 @@ echo $arg_list
 recurrence=0
 
 ##default sorting type 
-sort=abr
+sort=avl
 
-## no done by c language
-reverse=
 
 ## function of return used to see if the command line was executed and if not exit the program
 fct_return()
@@ -293,7 +291,7 @@ fct_p2()
 			echo "other internal error"
 			exit 2
 		fi		
-		gnuplot -persist gnp_2.gnp
+		gnuplot -persist gnp_p2.gnp
 		if [ $? -ne 0 ] ; then
 			echo "error on gnuplot"
 			exit 3
