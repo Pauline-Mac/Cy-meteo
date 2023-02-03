@@ -162,7 +162,7 @@ for var in $arg_list; do
 		"-Q") fct_Q ;;
 		
 		*) if [ $recurrence -eq 0 ] ; then
-			cat $file > localisation.txt
+			cat $file | tr ',' ';' > localisation.txt
 		fi ;;
 	esac 
 done
@@ -182,6 +182,7 @@ fct_t1()
 		t1=$((t1+1))
 		./t1 t1.txt output_t1.txt --$sort ## executing the c program and looking if it succeed to finish without any errors
 		
+		## looking to the return value of the c program and ext when needed
 		if [ $? -eq 1 ] ; then
 			echo "error on activated options (wrong combination, missing mandatory option, etc.)"
 			exit 2
@@ -292,7 +293,7 @@ fct_p2()
 			echo "other internal error"
 			exit 2
 		fi		
-		gnuplot -persist gnp_p2.gnp
+		gnuplot -persist gnp_2.gnp
 		if [ $? -ne 0 ] ; then
 			echo "error on gnuplot"
 			exit 3
@@ -307,7 +308,7 @@ fct_h()
 		echo $h
 		echo "problem detected too many arguments of the same type"
 	else
-		cut -d";" -f1,10,11,15 localisation.txt > h.txt
+		cut -d ";" -f1,10,11,15 localisation.txt > h.txt
 		h=$((h+1))
 		./h h.txt output_h.txt --$sort
 		if [ $? -eq 1 ] ; then
