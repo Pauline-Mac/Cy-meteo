@@ -479,9 +479,6 @@ int main(int argc, char **argv)
 {
 	int AVL = 0;
 	int ABR = 0;
-	int LIST = 0;
-	int AVL = 0;
-	int ABR = 0;
 	int LIST =0;
 
 	if(strcmp(argv[2],"--avl") == 0){
