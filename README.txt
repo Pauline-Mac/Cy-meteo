@@ -39,6 +39,10 @@ Optional :
   
   --help will write this readme in the terminal
 
+RUNNING THE PROGRAM :
+To run the program, you will need to use 'bash program.sh ...'  or use the command 'chmod +x program.sh' to give the execution right to the program and the ./program.sh ...
+
+
 THANKS FOR USING OUR PROGRAM, WE HOPE YOU WILL ENJOY THE RESULTS
 
 CLEMENT LE COADOU AND PAULINE MACEIRAS CY TECH
