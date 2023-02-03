@@ -261,7 +261,7 @@ fct_p1()
 			echo "other internal error"
 			exit 2
 		fi		
-		gnuplot -persist gnp_1.gnp
+		gnuplot -persist gnp_p1.gnp
 		if [ $? -ne 0 ] ; then
 			echo "error on gnuplot"
 			exit 3
@@ -292,7 +292,7 @@ fct_p2()
 			echo "other internal error"
 			exit 2
 		fi		
-		gnuplot -persist gnp_2.gnp
+		gnuplot -persist gnp_p2.gnp
 		if [ $? -ne 0 ] ; then
 			echo "error on gnuplot"
 			exit 3
