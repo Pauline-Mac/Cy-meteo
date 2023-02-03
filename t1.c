@@ -22,6 +22,7 @@ typedef struct arbre
 } Arbre;
 typedef struct chainon{
 	int id;
+
     float vitesse;
     float NScoor;
     float OEcoor;
@@ -52,12 +53,13 @@ pArbre creerArbre(int id, float temp, float temp_min, float temp_max)
 
 
 
-void traiter(pArbre a, FILE* outputfile, int i)
+void traiter(pArbre a, FILE* outputfile, int* i)
 {
 
 
 	// add counter at start of every line in outfile to replace station id
-	fprintf(outputfile,"%d",i);
+	fprintf(outputfile,"%d",*i);
+	*i = *i +1;
 
 	// add data to output file with modification
 	// x :a->id  y:a->angle  -y : a->vitesse +y : a->NScoor
@@ -87,6 +89,7 @@ Chainon* creationChainon(int id, float temp, float temp_min, float temp_max){
 		exit(1);
 	}
 	pnew->id = id;
+	
     pnew->angle = temp;
     pnew->vitesse = temp_min;
     pnew->NScoor = temp_max;
@@ -148,11 +151,11 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
                 p1->NScoor = atof(list_champ[3]);
             }
             //update min
-            if(atof(list_champ[2]) > p1->vitesse){
+            if(atof(list_champ[2]) < p1->vitesse){
                 p1->vitesse = atof(list_champ[2]);
             }
-            //update moy
-            p1->angle = (p1->angle + atof(list_champ[1])) / 2;
+            //update moy  somme of moy
+            p1->angle = (p1->angle + atof(list_champ[1]))/2;
 			return pHead;
 		}
 		//insert node
@@ -172,11 +175,11 @@ Chainon* insertList(Chainon* pHead, char* list_champ[]){
             p1->NScoor = atof(list_champ[3]);
         }
         //update min
-        if(atof(list_champ[2]) > p1->vitesse){
+        if(atof(list_champ[2]) < p1->vitesse){
             p1->vitesse = atof(list_champ[2]);
         }
-        //update moy
-        p1->angle = (p1->angle + atof(list_champ[1])) / 2;
+        //update moy somme of moy
+        p1->angle = (p1->angle + atof(list_champ[1]))/2;
 	}
 	else{
 		p1->pNext = pAddChainon;
@@ -200,11 +203,11 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
             a->NScoor = atof(list_champ[3]);
         }
         //update min
-        if(atof(list_champ[2]) > a->vitesse){
+        if(atof(list_champ[2]) < a->vitesse){
             a->vitesse = atof(list_champ[2]);
         }
-        //update moy
-        a->angle = (a->angle + atof(list_champ[1])) / 2;
+        //update moy somme of moy
+        a->angle = (a->angle + atof(list_champ[1]))/2;
 	}
 	else if (data < a->id)
 	{
@@ -220,13 +223,12 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 
 // FCT AVL
 
-void parcoursInfixe(pArbre a, FILE* outputfile, int i )
+void parcoursInfixe(pArbre a, FILE* outputfile, int* i )
 {
 	if (a != NULL)
 	{
 		parcoursInfixe(a->fg, outputfile,i);
 		traiter(a, outputfile, i);
-		i++;
 		parcoursInfixe(a->fd, outputfile,i);
 	}
 }
@@ -361,11 +363,11 @@ pArbre insert(pArbre root, char* list_champ[])
             root->NScoor = atof(list_champ[3]);
         }
         //update min
-        if(atof(list_champ[2]) > root->vitesse){
+        if(atof(list_champ[2]) < root->vitesse){
             root->vitesse = atof(list_champ[2]);
         }
-        //update moy
-        root->angle = (root->angle + atof(list_champ[1])) / 2;
+        //update moy somme moy
+        root->angle = (root->angle + atof(list_champ[1]))/2;
 	}
 
 	else if (data > root->id)
@@ -470,7 +472,6 @@ int main(int argc, char **argv)
 		AVL = 1;
 	}
 	
-	int i = 1;
 
 
 	pArbre rootDat = NULL;
@@ -511,6 +512,8 @@ int main(int argc, char **argv)
     char *value;
     int colomn;
     char *champ[4] = {"0", "0", "0", "0"};
+	int* i = malloc(sizeof(int));
+	*i = 1;
 
     while ((read = getline(&line, &len, inputFile)) != -1)
     {
