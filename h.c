@@ -477,6 +477,9 @@ void parcoursINFIXEaddToNewAVL(pArbre root, pArbre* newroot){
 
 int main(int argc, char **argv)
 {
+	 // take out ./exe argument in argument count and in argument list
+    argc--;
+    argv++;
 	int AVL = 0;
 	int ABR = 0;
 	int LIST =0;
@@ -501,9 +504,7 @@ int main(int argc, char **argv)
 
     FILE *inputFile;
 
-    // take out ./exe argument in argument count and in argument list
-    argc--;
-    argv++;
+ 
 
     if (argc == 0)
     {
