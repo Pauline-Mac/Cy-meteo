@@ -55,6 +55,7 @@ void traiter(pArbre a, FILE* outputfile, int* i)
 
 	// add counter at start of every line in outfile to replace station id
 	fprintf(outputfile,"%d",*i);
+	*i =*i +1;
 
 	// add data to output file with modification
 	// x :a->id  y:a->angle  -y : a->vitesse +y : a->NScoor
@@ -217,13 +218,12 @@ pArbre recursive_insertABR(pArbre a, char* list_champ[])
 
 // FCT AVL
 
-void parcoursInfixe(pArbre a, FILE* outputfile ,int i)
+void parcoursInfixe(pArbre a, FILE* outputfile ,int* i)
 {
 	if (a != NULL)
 	{
 		parcoursInfixe(a->fg, outputfile,i);
 		traiter(a, outputfile,i);
-		i++;
 		parcoursInfixe(a->fd, outputfile,i);
 	}
 }
@@ -471,7 +471,7 @@ int main(int argc, char **argv)
 	}
 	
 	
-	int* i;
+	int* i = malloc(sizeof(int));
 	*i = 1;
 
 
