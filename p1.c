@@ -467,7 +467,7 @@ int main(int argc, char **argv)
 	}
 	
 	
-	int i*;
+	int* i;
 	*i = 1;
 
 
