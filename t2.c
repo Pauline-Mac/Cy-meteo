@@ -66,7 +66,6 @@ void traiter(pArbre a, FILE* outputfile)
 		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0], a->angle/a->counter);
 	}
 	else{
-		printf("%ld",strlen(str2));
 		fprintf(outputfile, "%c%c%c%c-%c%c-%c%c %c%c:00 %0.5f\n", str[0],str[1],str[2],str[3],str[4],str[5],str[6],str[7],str2[0],str2[1], a->angle/a->counter);
 	}
 }
