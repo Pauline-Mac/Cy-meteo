@@ -424,7 +424,7 @@ for var in $arg_list; do
 done
 
 ## in case not any mods selected, exit
-if [[ $recurrence -eq 0 && $t1 -eq 0 && $p1 -eq 0 && $w -eq 0 && $h -eq 0 && $m -eq 0 && $t2 -eq 0 && $p2 -eq 0 ]] ; then
+if [[ $t1 -eq 0 && $p1 -eq 0 && $w -eq 0 && $h -eq 0 && $m -eq 0 && $t2 -eq 0 && $p2 -eq 0 ]] ; then
 	echo "please select an option"
 	exit 1
 fi
