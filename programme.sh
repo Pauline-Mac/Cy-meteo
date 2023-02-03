@@ -212,7 +212,7 @@ fct_t2()
 		echo $t2
 		echo "problem detected too many arguments of the same type"
 	else
-		cut -d";" -f1,2,13,14 localisation.txt | tr -d '-' > t2.txt
+		cut -d";" -f2,12 localisation.txt | tr -d '-' > t2.txt
 		t2=$((t2+1))
 		./t2 t2.txt output_t2.txt --$sort
 		if [ $? -eq 1 ] ; then
@@ -276,7 +276,7 @@ fct_p2()
 		echo $p2
 		echo "problem detected too many arguments of the same type"
 	else
-		cut -d";" -f1,2,7 localisation.txt > p2.txt
+		cut -d";" -f2,7 localisation.txt > p2.txt
 		p2=$((p2+1))
 		./p2 p2.txt output_p2.txt --$sort
 		if [ $? -eq 1 ] ; then
