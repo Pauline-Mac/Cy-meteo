@@ -49,12 +49,12 @@ pArbre creerArbre(int id, float pres)
 	return pnew;
 }
 
-void traiter(pArbre a, FILE* outputfile, int i)
+void traiter(pArbre a, FILE* outputfile, int* i)
 {
 
 
 	// add counter at start of every line in outfile to replace station id
-	fprintf(outputfile,"%d",i);
+	fprintf(outputfile,"%d",*i);
 
 	// add data to output file with modification
 	// x :a->id  y:a->angle  -y : a->vitesse +y : a->NScoor
@@ -467,7 +467,8 @@ int main(int argc, char **argv)
 	}
 	
 	
-	int i=1;
+	int i*;
+	*i = 1;
 
 
 	pArbre rootDat = NULL;
