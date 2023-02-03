@@ -1,6 +1,0 @@
-set xdata time
-set timefmt "%Y-%m-%d %H:%M"
-set format x "%Y-%m-%d\n%H:%M"
-set xlabel "Time"
-set xrange["2010-01-05":"2020-01-25"]
-plot .... using 1:2 t "inbound" w lines
